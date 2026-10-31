@@ -1,0 +1,162 @@
+{
+  "status": "published-ready-for-implementation",
+  "tickets": [
+    {
+      "id": "BAS-001",
+      "title": "Sign in and inspect a permission-scoped record",
+      "path": "docs/planning/tickets/bas-001-signed-in-workspace.md",
+      "blockedBy": [],
+      "githubIssue": 2,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/2"
+    },
+    {
+      "id": "BAS-002",
+      "title": "Prove real text tools and live voice on the deployed host",
+      "path": "docs/planning/tickets/bas-002-provider-compatibility.md",
+      "blockedBy": [
+        "BAS-001"
+      ],
+      "githubIssue": 3,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/3"
+    },
+    {
+      "id": "BAS-003",
+      "title": "Explore connected part, batch and unit history",
+      "path": "docs/planning/tickets/bas-003-connected-explorer.md",
+      "blockedBy": [
+        "BAS-001"
+      ],
+      "githubIssue": 4,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/4"
+    },
+    {
+      "id": "BAS-004",
+      "title": "Compare quality findings and reconcile inspection rates",
+      "path": "docs/planning/tickets/bas-004-quality-analysis.md",
+      "blockedBy": [
+        "BAS-003"
+      ],
+      "githubIssue": 5,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/5"
+    },
+    {
+      "id": "BAS-005",
+      "title": "Investigate recorded maintenance recurrence",
+      "path": "docs/planning/tickets/bas-005-maintenance-history.md",
+      "blockedBy": [
+        "BAS-003"
+      ],
+      "githubIssue": 6,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/6"
+    },
+    {
+      "id": "BAS-006",
+      "title": "Open exact engineering document revisions and passages",
+      "path": "docs/planning/tickets/bas-006-revision-knowledge.md",
+      "blockedBy": [
+        "BAS-003"
+      ],
+      "githubIssue": 7,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/7"
+    },
+    {
+      "id": "BAS-007",
+      "title": "Forecast material consumption with an explainable baseline",
+      "path": "docs/planning/tickets/bas-007-baseline-material-forecast.md",
+      "blockedBy": [
+        "BAS-003"
+      ],
+      "githubIssue": 8,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/8"
+    },
+    {
+      "id": "BAS-008",
+      "title": "Ask unscripted questions with structured evidence-backed results",
+      "path": "docs/planning/tickets/bas-008-typed-ai-investigation.md",
+      "blockedBy": [
+        "BAS-002",
+        "BAS-004",
+        "BAS-005",
+        "BAS-006",
+        "BAS-007"
+      ],
+      "githubIssue": 9,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/9"
+    },
+    {
+      "id": "BAS-009",
+      "title": "Save, share and review versioned investigations",
+      "path": "docs/planning/tickets/bas-009-persistent-investigations.md",
+      "blockedBy": [
+        "BAS-008"
+      ],
+      "githubIssue": 10,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/10"
+    },
+    {
+      "id": "BAS-010",
+      "title": "Preview and export a permitted English report",
+      "path": "docs/planning/tickets/bas-010-english-report-export.md",
+      "blockedBy": [
+        "BAS-009"
+      ],
+      "githubIssue": 11,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/11"
+    },
+    {
+      "id": "BAS-011",
+      "title": "Complete bilingual live voice investigations",
+      "path": "docs/planning/tickets/bas-011-bilingual-live-voice.md",
+      "blockedBy": [
+        "BAS-009"
+      ],
+      "githubIssue": 12,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/12"
+    },
+    {
+      "id": "BAS-012",
+      "title": "Inspect actual Governance and source failure behavior",
+      "path": "docs/planning/tickets/bas-012-governance-and-source-failures.md",
+      "blockedBy": [
+        "BAS-009"
+      ],
+      "githubIssue": 13,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/13"
+    },
+    {
+      "id": "BAS-013",
+      "title": "Guide each persona and reset the presenter workspace",
+      "path": "docs/planning/tickets/bas-013-persona-presenter-workspace.md",
+      "blockedBy": [
+        "BAS-010",
+        "BAS-011",
+        "BAS-012"
+      ],
+      "githubIssue": 14,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/14"
+    },
+    {
+      "id": "BAS-014",
+      "title": "Verify cross-account evidence and failure recovery",
+      "path": "docs/planning/tickets/bas-014-cross-flow-safeguards.md",
+      "blockedBy": [
+        "BAS-013"
+      ],
+      "githubIssue": 15,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/15"
+    },
+    {
+      "id": "BAS-015",
+      "title": "Rehearse, verify and hand off the complete demonstration",
+      "path": "docs/planning/tickets/bas-015-presentation-and-handoff.md",
+      "blockedBy": [
+        "BAS-014"
+      ],
+      "githubIssue": 16,
+      "githubUrl": "https://github.com/mateldragoran/Baseerat-AI/issues/16"
+    }
+  ],
+  "parentSpecification": "https://github.com/mateldragoran/Baseerat-AI/issues/1",
+  "approvedOn": "2026-10-31",
+  "implementationAuthorized": true
+}

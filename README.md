@@ -27,4 +27,3 @@ bilingual text/live voice support the agreed investigation workflows.
 Future coding agents must read [AGENTS.md](AGENTS.md), the ticket and its
 specification references. Begin with BAS-001 under the recorded approval; follow
 its dependencies and independent post-build review requirements.
-

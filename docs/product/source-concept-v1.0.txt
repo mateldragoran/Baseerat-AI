@@ -1,0 +1,1083 @@
+BASIRAT AI — Frontend Product & Technical Specification
+Version 1.0 · 27 October 2026 · Implementation reference
+
+Product: BASIRAT AI (بصیرت)
+Descriptor: Unified Aerospace Engineering Intelligence
+Initial target: Pakistan Aeronautical Complex (PAC), Kamra
+Product positioning: Unified Data. Intelligent Answers. Predictive Insight. Local Control.
+1. Executive decisions
+The first release will be a functional engineering intelligence application, with realistic synthetic datasets, a first-class natural-language intelligence workspace, independently navigable engineering records, explainable analysis and persistent investigations.
+
+It will not be organized primarily around executive dashboards. The application should help users answer specific engineering questions and investigate the underlying evidence.
+Final product-experience priorities
+Primary interaction	Ask BASIRAT — natural-language queries across connected, permissioned information
+Primary foundation	Unified engineering entities, relationships and source records
+Primary trust mechanism	Inline evidence and inspectable source records
+Supporting intelligence	Quality, maintenance, reliability and explainable material forecasts
+Target visual style	Reserved, precise enterprise software; dark navigation with neutral content surfaces
+Initial data environment	Clearly identified synthetic data, structurally ready for authorized real integrations
+Local AI requirement	No mandatory external inference API in the intended customer-controlled deployment
+
+
+Research basis and limits
+The Ministry of Defence Production's published yearbook identifies PAC's Aircraft Rebuild Factory, Mirage Rebuild Factory, Aircraft Manufacturing Factory and Avionics Production Factory, alongside its aviation research and development organization. This supports designing BASIRAT around manufacturing, rebuild, engineering and related information-management contexts. It does not establish what PAC's present databases contain, how they are integrated or which specific workflows are deficient. 
+modp.gov.pk
+
+
+The NASTP Kamra description also emphasizes aerospace design, manufacturing, MRO and logistics as relevant activities within the broader Kamra ecosystem. 
+nastp.gov.pk
+
+
+Two important enterprise product precedents reinforce the recommended approach:
+- Palantir Foundry Object Explorer uses object-oriented exploration, filtering, record views and relationships; BASIRAT should adopt the general principle of connected entities rather than imitate the interface. 
+  Palantir
+- IBM Maximo demonstrates that natural-language questions over enterprise operational data can generate useful tables and views within a larger application, rather than existing as an isolated chatbot. 
+  IBM Maximo Application Suite
+The PAC personas and workflows below are product-design assumptions requiring eventual validation with authorized institutional users.
+
+2. PAC-centered user personas
+The interface should use persona-based entry points, not entirely separate applications. All users share the same record definitions, evidence model and search system, while their default workspaces and available actions differ.
+Persona	Primary task	Default experience	What to avoid
+Technical leadership	Understand cross-functional findings and examine supporting evidence	Concise Overview, recent investigations and Ask BASIRAT	Dozens of unsupported KPIs
+Design / engineering	Locate specifications, investigate revisions and connect related records	Ask BASIRAT, Data Explorer and Knowledge	Answers without applicable revisions
+Manufacturing engineer	Examine historical production and inspection relationships	Data Explorer with batch and component filters	Large generic business dashboards
+Quality engineer	Investigate nonconformance trends and supporting documentation	Quality Intelligence and Investigations	AI claims of root cause without evidence
+Maintenance / overhaul specialist	Examine historical events and recurring issues	Maintenance Intelligence and component history	Unvalidated failure prediction
+Material planner	Analyze historical consumption and forecast demand	Material Planning	Forecasts without inputs or uncertainty
+IT / security evaluator	Verify connections, permissions, inference location and auditability	Governance	Cosmetic security indicators
+
+Defaults by persona
+A quality engineer's landing page should show a recent investigation, a small number of relevant quality findings and suggested queries such as “Compare inspection discrepancies for HA-204 by production batch.”
+
+A material planner should instead see demand-analysis shortcuts and recent planning scenarios.
+
+A senior leader should see a brief operational-information overview and a prominent question field, with drill-down access when authorized.
+
+The application must not infer a user's clearance from job title. The actual permissions supplied by the identity and authorization layer determine visible data and actions.
+
+3. Final information architecture
+I recommend simplifying the earlier seven-destination proposal to six primary destinations, with analytical specialties nested under Intelligence.
+BASIRAT AI
+
+
+ Overview
+
+ Ask BASIRAT
+
+ Data Explorer
+
+ Intelligence
+
+Quality & Manufacturing
+
+Maintenance & Reliability
+
+Material Planning
+
+Predictive Models
+
+ Investigations
+
+ Engineering Knowledge
+
+
+ Governance
+
+
+Governance remains separately accessible only to authorized roles. Predictive Models is a subworkspace because it is one application of the intelligence foundation, not a standalone flagship product.
+
+A universal Ask BASIRAT command is accessible through the top bar and keyboard, but opening the full workspace should provide a significantly richer analytical experience.
+4. Technology architecture — final selection
+These are recommended choices for the initial release, not a claim that their latest versions are interoperable without dependency testing.
+Concern	Final recommendation	Reason
+Application	Next.js App Router + React + TypeScript	Route layouts, server rendering, client interactivity and a coherent application framework
+Styling	Tailwind CSS + CSS custom properties	Consistent design tokens with fast, maintainable component styling
+UI primitives	shadcn/ui with Radix-based components	Ownership of component code, accessibility primitives and restrained customization
+Icons	Lucide React	Coherent, professional visual language
+Data tables	TanStack Table	Sorting, filtering, column visibility and controlled table state
+Server state	TanStack Query	Cached queries, refetching, pagination and recoverable loading states
+Client state	Zustand	Minimal shared UI state, such as the inspector and query context
+URL state	Next.js search parameters	Reproducible searches, filters and selected tabs
+Forms	React Hook Form + Zod	Form validation and clear typed input boundaries
+Charts	Apache ECharts	Flexible engineering analytics, time series and interactive charts
+Relationships	React Flow	Optional focused entity relationship diagrams
+Documents	PDF.js through a maintained React wrapper	Local document previews with selectable text and references
+AI interface	Custom structured-response renderer; AI SDK UI where useful	Streaming support without forcing a conventional chatbot presentation
+Backend for prototype	PostgreSQL-backed application services	Persistent queries, evidence relationships and multiple connected data domains
+Authentication	Server-verified authentication and authorization	Never trust a frontend role flag as enforcement
+Testing	Vitest, React Testing Library and Playwright	Component, behavior and complete user-journey testing
+
+The latest documentation confirms Next.js App Router's server/client component architecture, TanStack Table's controlled filtering and pagination, AI SDK's streaming protocols, and React Flow's interactive graph support. 
+Next.js+3
+
+Important architectural decisions
+Use React Server Components for initial route data and server-renderable views. Use client components for the AI query composer, charts, table interactions, evidence drawer and other interactive surfaces.
+
+Do not put all state into Zustand. URL parameters own shareable navigation state. TanStack Query owns server data. Local component state owns transient interface details. Zustand is for genuinely shared interaction state.
+
+Do not expose institutional databases directly to the browser. All data-access operations should pass through authenticated, authorization-aware application endpoints.
+
+Do not rely on hosted Supabase for the product's security story. Supabase can be used to build and persist the prototype, but the product architecture must permit later customer-controlled deployment. Self-hosting is documented by Supabase, although backups, hardening, operational monitoring and other responsibilities become the deployer's responsibility. 
+Supabase Docs
+
+
+Use structured AI results, not arbitrary generated JSX or HTML. The AI system may request approved result formats; the frontend renders them through a fixed set of trusted components.
+Decision on the backend
+For the prototype, a conventional persistent backend is justified. BASIRAT needs saved investigations, cross-entity navigation, permission-aware retrieval, query histories and provenance records. These should not be simulated solely through browser state.
+
+The eventual institutional integration and model-serving architecture is a distinct engineering effort. The frontend should communicate through stable internal contracts so that replacing prototype services does not require rewriting the interface.
+
+5. Visual system — Precision Intelligence
+I recommend refining the previous all-dark concept.
+
+Use a dark application shell with restrained, high-legibility content surfaces as the default. This creates a recognizable BASIRAT identity without making tables and documents harder to read.
+
+Provide a full dark workspace theme for presentations and user preference, but ensure both modes maintain consistent semantic meaning.
+Primary design tokens
+Shell
+
+#0D1726
+
+Sidebar
+
+#111F30
+
+Canvas
+
+#F5F7FA
+
+Surface
+
+#FFFFFF
+
+Primary
+
+#2463A6
+
+AI Accent
+
+#087F79
+
+Border
+
+#DCE3EA
+
+Text
+
+#172536
+
+Muted
+
+#64748B
+
+Positive
+
+#23765A
+
+Warning
+
+#A56B22
+
+Critical
+
+#B8464C
+
+
+
+Full dark workspace override
+Background
+
+#0B1220
+
+Surface
+
+#172337
+
+Border
+
+#2B3A50
+
+
+
+Accent usage: blue for navigation, selection and primary actions; teal for BASIRAT intelligence features; amber for review-required states; red for genuine errors and critical conditions. Source-backed evidence should have a neutral labeled treatment, not a universal green tick implying correctness.
+Typography
+- Primary UI: Inter or an equivalent highly legible sans-serif.
+- Technical identifiers: JetBrains Mono, limited to IDs, version labels and structured technical values.
+- Urdu identity: Noto Nastaliq Urdu or a suitable verified Urdu font, used in the brand lockup rather than routine interface controls.
+- Title scale: 28px page title, 20px section title, 16px card heading.
+- Body: 14px default, 15–16px for explanatory passages.
+- Table: 13–14px, using tabular numerals.
+- Metadata: 12px, with sufficient contrast.
+- Line heights: approximately 1.35–1.55, according to density.
+Layout measurements
+Element	Specification
+Expanded sidebar	240px
+Collapsed sidebar	64px
+Global header	64px
+Desktop page gutters	32px
+Laptop page gutters	24px
+Main content	Fluid, with sensible width limits for prose and forms
+Inspector drawer	400px default, adjustable where necessary
+Content grid	12 columns, 16–20px gaps
+Base spacing	4px unit
+Typical card radius	10px
+Inputs/buttons	36–40px height
+Table rows	44px comfortable; 36px compact
+Primary target	1440px+ desktop, functional down to 1024px
+
+At smaller desktop widths, the evidence drawer should overlay the content rather than crush analytical tables. Mobile may provide reading, search and report review, but complex investigative workflows should prioritize desktop use.
+Interface writing rules
+Use concise and functional language:
+Avoid	Use
+Ask anything about your world	Query connected engineering records
+Let AI work its magic	Analyze records
+Intelligent insights discovered!	Analysis complete
+We found something amazing	7 matching records
+Your AI is thinking	Retrieving authorized records
+You're all set!	Investigation saved
+Ultra-secure military AI	Local inference configured
+Predict failures before they happen	View predictive model results
+
+No decorative greeting paragraphs or exaggerated marketing text inside the product.
+
+6. Application shell specification
+Sidebar
+Top: BASIRAT AI wordmark and collapse control.
+
+Middle: principal destinations, with Ask BASIRAT positioned directly after Overview.
+
+Bottom: Governance (permission-gated), Help, theme selector and user profile.
+
+Sidebar items must have visible focus states, tooltips in collapsed mode and active-route indicators. Hide destinations that the user cannot access, rather than presenting an entire application full of access-denied screens.
+Global header
+From left to right:
+
+Breadcrumb / current context → Global search → Ask BASIRAT → Source freshness → User menu
+
+Use global search for identifiers, document titles, components and record names. Use Ask BASIRAT for analytical questions.
+
+For example, typing HA-204 in search should lead directly to the entity record; asking “Show quality trends for HA-204 during the last six months” should initiate an analytical query.
+Context handling
+A selected component can be carried into Ask BASIRAT as a visible chip. An investigation may likewise become the current analytical context.
+
+The user must be able to inspect and remove context rather than have hidden conversation state affect answers.
+
+An evidence drawer is shared across the application. Opening an inspection record from a chart or AI answer should use the same record presentation and provenance rules.
+Global interaction shortcuts
+Shortcut	Action
+Ctrl/Cmd + K	Global search
+Ctrl/Cmd + J	Open Ask BASIRAT
+/	Focus search, when not typing
+Esc	Close topmost dialog/drawer or dismiss suggestions
+Alt + Left	Return to previous navigation context where supported
+
+Shortcuts must be discoverable, customizable if they conflict with assistive technology, and never replace accessible controls.
+
+7. Page specifications
+7.1 Overview
+Route: /overview
+Primary personas: leadership, frequent specialists
+Purpose: Provide orientation and next actions, not an executive wall of charts.
+Screen anatomy
+Overview
+
+Engineering Workspace
+
+BASIRAT INTELLIGENCE
+
+Query connected engineering information
+Enter an engineering question…
+
+
+
+Recent investigations
+4
+
+
+Connected sources
+4
+
+
+
+Continue work
+HA-204 — Inspection discrepancy review
+
+
+Material demand — Monthly forecast
+
+
+Illustrative synthetic workspace content.
+Functional behavior
+The Overview retrieves the user's available projects/investigations and a small set of role-relevant indicators. No more than four summary indicators should appear by default.
+
+Selecting a recent item opens its persistent route. Query submission opens Ask BASIRAT with the entered question. Clicking a status indicator opens a filtered underlying record view.
+
+Empty state: “No saved investigations. Start with a question or explore available records.”
+
+Unavailable source state: “One source is unavailable. Available records may be incomplete.” Link to permitted source-status details.
+
+Acceptance: Every summary count links to a reproducible record set; recent items reflect actual saved content; role-specific content never exceeds granted permissions.
+7.2 Ask BASIRAT
+Routes: /ask and /ask/[sessionId]
+Primary personas: all authorized users
+Purpose: Perform natural-language analysis across connected data.
+Screen anatomy
+Three zones on desktop:
+- Left, 220px: saved sessions, current investigations and a new-query action. Collapsible.
+- Center, flexible: query composer and structured results.
+- Right, 400px when open: selected evidence, source record, method or document context.
+The query composer is prominent on the empty state and moves to the bottom after the first query, while remaining accessible.
+
+Suggested questions appear only on the empty state and adapt to the user's permitted sources and functional role.
+Query composition
+The composer supports:
+- Freeform text with multiline editing.
+- A selected entity or document chip.
+- A dataset-scope selector.
+- An optional date range.
+- An optional investigation association.
+- Submit (Ctrl/Cmd + Enter) and Cancel while processing.
+The user can inspect the active scope, such as Engineering + Quality + Maintenance. Scope expansion requires permissions and should be explicit.
+Query-state machine
+State	Presentation
+Empty	Query composer, 3 suggested tasks, recent sessions
+Validating	Input preserved; scope and entity references checked
+Clarification required	Short disambiguation choice; no invented assumption
+Retrieving	Source-status text, cancellation control
+Analyzing	Subtle progress indicators, no fabricated model reasoning
+Streaming result	Answer sections appear progressively with stable layouts
+Complete	Result with citation links, actions and methods
+Partial	Answer plus missing-source or timeout notice
+Unanswerable	Explain unavailable evidence and possible valid refinements
+Unauthorized	Neutral refusal; no disclosure of protected record content
+Error	Retry, edit query and retain prior completed results
+
+Result component hierarchy
+The AI experience should be schema-driven. Every completed response renders zero or more typed sections:
+Result block	UI
+summary	Short explanation, normally 1–3 sentences
+finding	Labeled observation with inline evidence references
+metric	Value, unit, definition, scope and period
+table	Sortable and filterable record set
+chart	Appropriate time series, distribution or comparison
+timeline	Dated engineering events
+entity_list	Linked components/documents/records
+comparison	Side-by-side structured values
+forecast	Estimate, interval, horizon and assumptions
+limitation	Incomplete evidence, caveat or validation status
+action	Open records, filter data, save investigation, generate report
+
+The backend determines which supported blocks apply. The frontend never interprets arbitrary prose as instructions to execute actions.
+Evidence interaction
+Each evidence reference displays a concise identifier, for example NCR-024.
+
+Selecting it opens the right inspector showing:
+- Original record ID and source label.
+- Record type and revision/version.
+- Event date and last synchronization time.
+- Relevant excerpt or structured fields.
+- Relationship to the finding.
+- Link to full source-backed entity page.
+- Access and completeness information, if applicable.
+Critical rule: A referenced record must be resolvable under the current user's permissions when the answer is shown. Invalid citations should result in a visibly incomplete answer, not decorative source badges.
+Follow-up behavior
+Subsequent questions inherit explicit session context such as the referenced component and time window. Each inherited condition appears in a compact context panel and can be cleared.
+
+Selecting Explore records opens Data Explorer with the same entity and filters. Save investigation creates or updates a persistent investigation. View method shows datasets used, filters, aggregation definitions, and model or calculation information.
+
+Acceptance: A user can ask three different questions about the same component, open original records, refine the date range, save the findings and resume the session after refreshing the page.
+7.3 Data Explorer
+Route: /explore
+Primary personas: engineering, QA, maintenance, manufacturing and planners.
+Explorer landing
+Start with a unified search and a simple entity-type selector:
+
+Components | Assemblies | Documents | Batches | Inspections | Nonconformances | Maintenance | Materials
+
+Below, present a properly searchable table with columns selected for the active entity type.
+
+For components, default columns are: identifier, description, revision, lifecycle status, last recorded event and linked record count.
+
+Use server-consistent sorting, filtering and pagination. Every filter should be reflected in the URL.
+Entity detail page
+Route: /explore/[type]/[id]
+HA-204
+Hydraulic assembly · Fictional engineering record
+
+Revision C
+
+24 inspections
+7 nonconformances
+12 service events
+47 transactions
+
+
+Overview
+
+Timeline
+
+Linked Records
+
+Documents
+
+Analysis
+
+CONNECTED ENGINEERING HISTORY
+Specification revision C
+
+Engineering documentation
+
+
+
+NCR-024 — Inspection discrepancy
+
+Quality record
+
+
+
+Service event MNT-031
+
+Maintenance history
+
+
+
+
+This is illustrative, not actual PAC information.
+Shared entity detail contract
+Every entity detail includes:
+1. Stable human-readable ID and canonical internal ID.
+2. Entity type, label and descriptive metadata.
+3. Source-system identity and synchronization state.
+4. Related records organized by type.
+5. Applicable dates and revision context.
+6. A timeline of relevant events, if available.
+7. An Ask about this record action that supplies explicit context.
+8. An evidence/metadata inspector.
+9. A meaningful empty state where related records do not exist.
+The graph view, when implemented, should be restricted initially to one or two relationship depths with filtering by relationship type. Tables remain the accessible and primary alternative.
+Entity-specific detail differences
+Entity	Specialized information
+Component	Parent assembly, revision, applicable documents, historical events
+Assembly	Child components, effective configurations, associated records
+Engineering document	Revision history, approval metadata, referenced entities
+Manufacturing batch	Date range, items, inspections, nonconformances
+Inspection	Method/category, findings, associated batch, document references
+Nonconformance	Observation, dates, linked records, review state
+Maintenance event	Event date, recorded observation, actions documented, component link
+Material	Inventory identifier, ledger history, consumption, forecast availability
+Transaction	Date, quantity, direction, record reference and source
+
+Do not invent operational approval controls, maintenance instructions or airworthiness actions within these record pages.
+7.4 Intelligence
+Route: /intelligence
+Subroutes: /quality, /maintenance, /materials, /models
+
+The Intelligence landing should ask users what kind of analysis they need, rather than immediately displaying every metric.
+
+Each analysis has a consistent structure:
+
+Question / analytical goal → filter scope → main visualization → supporting record set → source/method details → Ask BASIRAT / Save investigation.
+Quality & Manufacturing
+Route: /intelligence/quality
+
+Default screen:
+- Heading: Quality analysis
+- Scope filters: component family, production batch, discrepancy category, date range.
+- Main chart: count of recorded nonconformances by period.
+- Adjacent summary: most frequent observed categories.
+- Below: the actual filtered nonconformance table.
+- Contextual actions: Compare batches, Inspect records, Ask BASIRAT, Save investigation.
+Important analytical distinction: Raw counts must not be labeled defect rates unless suitable production denominators exist. A correlation between a document revision and a quality observation must not be presented as proven causation.
+Maintenance & Reliability
+Route: /intelligence/maintenance
+
+Default screen:
+- Relevant component/family selector.
+- Historical events over time.
+- Category distribution or recurrent observation table.
+- Linked service-event records.
+- Optional component comparison.
+- Source completeness note.
+If reliability rates cannot be properly calculated, label the chart Recorded maintenance events, not failure rate.
+
+Avoid visually alarming risk scores that are not supported by validated models.
+Material Planning
+Route: /intelligence/materials
+
+This is a core functional screen in the first release.
+Material demand analysis
+Illustrative forecast
+
+Item HA-204-SEAL
+Horizon: 3 months
+Monthly units
+
+
+Observed demandForecast
+
+510152025JulAugSepOctNovDecJan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Synthetic values shown for interaction design only. Forecast methodology and validation must be displayed in the functioning product.
+
+Planning assumptions
+
+View details
+
+Historical demand · Forecast method · Evaluation period · Prediction interval
+
+Working behavior: Choosing a material and horizon refetches or recomputes its forecast. A changed planning assumption creates a labeled scenario; it never silently overwrites the approved baseline.
+
+The forecast details panel shows data coverage, method version, evaluation period, error metrics, interval interpretation and caveats.
+
+The system should not expose a user-adjustable certainty percentage as though it directly controls mathematical model confidence.
+Predictive Models
+Route: /intelligence/models
+
+For the first release, this is a model catalogue and validation-status view, not a screen filled with simulated aircraft risk predictions.
+
+Each model entry has:
+- Name and intended outcome.
+- Domain: forecasting, historical analysis or condition-based maintenance.
+- Status: Available for demonstration, Under evaluation, or Not configured.
+- Data requirements.
+- Validation summary, if one genuinely exists.
+- Model version and evaluation timestamp.
+- Link to an appropriate analysis workspace.
+The material-demand forecasting model can be functional. Condition-based maintenance models are documented as prospective until developed and evaluated with suitable data.
+7.5 Engineering Knowledge
+Routes: /knowledge, /knowledge/[documentId]
+
+The default library has document search, applicable type/revision filters and a compact document table. Default columns: title, document ID, revision, status, effective date and related components.
+
+The document viewer should support:
+- Local rendering of documents.
+- Search within document text.
+- Page navigation and zoom.
+- Revision selection.
+- Highlighting a referenced passage.
+- A right panel showing linked entities and cited findings.
+- A clear distinction between current and superseded revisions.
+Critical requirement: A source citation should deep-link to the referenced revision and specific page/section, where the available document data supports it.
+
+If a passage reference can no longer be resolved, display “Referenced passage unavailable” rather than guessing which text is equivalent.
+
+Document download, printing and exporting should respect authorization and retention policies.
+7.6 Investigations and reports
+Routes: /investigations, /investigations/[id]
+
+An investigation is a persistent research workspace, not merely a saved chat transcript.
+Investigation list
+Columns: title, primary entity, owner, updated date, review status and accessible source count.
+
+Filters: owner, status, date range, involved entity and domain.
+Investigation detail
+Desktop structure:
+- Header with title, owner, status and last update.
+- Left/main pane: Findings, Evidence, Query history, Notes, Report.
+- Optional right-side evidence inspector.
+Every finding has an origin type: Source observation, Computed analysis, AI interpretation or User note.
+
+Users can pin records and analytical charts. Saved items retain their identity and filter scope.
+
+The review status should be intentionally simple:
+
+Draft → Ready for review → Reviewed
+
+Reviewed means a designated user has reviewed the assembled document, not that the conclusions have received an engineering or regulatory approval.
+Report preview
+Default order:
+1. Title and document metadata.
+2. Investigation question/scope.
+3. Executive summary.
+4. Findings, each with citations.
+5. Supporting charts/tables.
+6. Evidence register.
+7. Methodological notes and limitations.
+8. Reviewer metadata and export information.
+Users can preview the report, review broken citations and export permitted content. The export must include a synthetic-data designation when applicable.
+7.7 Governance
+Routes: /governance, /governance/sources, /governance/access, /governance/ai, /governance/audit
+
+Accessible only to authorized evaluator/admin roles.
+
+The Governance landing contains four deliberately restrained panels:
+- Data sources: connectivity, authorized data scope, synchronization health.
+- Access: role assignment and effective permission summary.
+- AI environment: configured inference location, selected model and operating status.
+- Audit: recent auditable events, failed access attempts and available search filters.
+The AI environment must distinguish between configured local inference and independently verified network isolation.
+
+Use concrete labels:
+- “Inference endpoint: Local network”
+- “External inference provider: Not configured”
+- “Security assessment: Not performed”
+- “Data source: Simulated”
+- “Last synchronization: [timestamp]”
+Do not display “Fully air-gapped” or “Certified secure” merely because a user selects local deployment.
+Security demonstration
+The demonstration should include a real permission scenario:
+
+A user with a restricted dataset scope submits a question involving a protected record. The backend refuses that data operation. The frontend displays an ordinary access-limitation notice without leaking identifiers, counts or protected metadata that the user was not already permitted to know.
+
+All dashboards, citations, exports and AI answers must respect the same authorization boundary.
+
+8. Shared UX component standards
+Component	Required behavior
+Search	Debounced suggestions, keyboard selection, empty/no-result/error states
+Data table	Sorting, filtering, pagination, column visibility, row inspection
+Filter bar	Active chips, clear action, URL persistence
+Date range	Clear inclusivity/timezone rules and visible applied range
+Record link	Opens stable entity route and preserves return context
+Evidence reference	Opens inspectable source in contextual drawer
+Drawer	Focus trap, Escape to close, focus restoration, resize where appropriate
+Chart	Tooltip, underlying record access, units, date scope, accessible table alternative
+Query composer	Multiline input, referenced entity chips, explicit scope, cancel
+AI response	Typed results, progressive rendering, grounded evidence and limitations
+Document viewer	Page navigation, text search, citation targeting, revisions
+Forecast	History/forecast split, uncertainty, method details and scenario distinction
+Status	Text plus icon and color, not color alone
+Notification	Only for completed tasks or events requiring action
+Error state	Specific explanation, recovery control, preserved user input
+
+Common failure and empty states
+Situation	Exact copy
+No records	“No records match the selected filters.”
+New investigation	“No findings saved. Add records or save an analysis.”
+Source unavailable	“This source is temporarily unavailable. Results may be incomplete.”
+Missing citation	“The referenced source could not be verified.”
+Missing revision	“The requested document revision is unavailable.”
+Ambiguous question	“Multiple records match this identifier. Select one to continue.”
+Unanswerable AI query	“The available records do not support a reliable answer.”
+Unauthorized	“You do not have access to this information.”
+Failed analysis	“The analysis could not be completed. Your query has been retained.”
+Insufficient forecasting data	“Insufficient historical data for this forecast.”
+Saved successfully	“Investigation saved.”
+Export restricted	“Export is not permitted for this content.”
+
+The application should not automatically reveal whether a protected record exists through its error message.
+
+9. Frontend contracts and domain types
+The following describes the data the frontend requires; it does not prescribe the institution's database schema.
+Common record contract
+Every record response should support:
+- id: stable internal identifier.
+- displayId: human-readable identifier.
+- type: entity/document/event category.
+- title: user-facing label.
+- sourceId: registered information-source identifier.
+- sourceRecordId: original record reference where permitted.
+- createdAt, updatedAt, observedAt: meaningful timestamps as applicable.
+- dataAsOf: freshness indicator.
+- revision: nullable version identifier.
+- access: effective frontend-visible capabilities supplied by trusted authorization.
+- relations: typed connections to other accessible entities.
+- provenance: information required to inspect its origin.
+The backend may omit or redact fields based on access rights. The client must not infer missing fields are simply empty.
+Query request contract
+Minimum conceptual shape:
+type BasiratQueryRequest = {
+  sessionId?: string;
+  question: string;
+  scope: {
+    sourceIds?: string[];
+    entityRefs?: Array<{ type: string; id: string }>;
+    dateRange?: { from: string; to: string };
+  };
+  investigationId?: string;
+  previousResponseId?: string;
+};
+
+
+User roles and authorizations must come from the server-side session, not from a role property supplied by the browser.
+Query response contract
+type BasiratResponse = {
+  id: string;
+  sessionId: string;
+  status: "complete" | "partial" | "clarification" | "failed";
+  generatedAt: string;
+  scopeApplied: {
+    sourceIds: string[];
+    dateRange?: { from: string; to: string };
+    excludedSourceCount?: number;
+  };
+  blocks: BasiratResultBlock[];
+  evidence: EvidenceReference[];
+  limitations: string[];
+  availableActions: AllowedAction[];
+};
+
+
+BasiratResultBlock should be a discriminated union containing only approved result kinds (summary, finding, table, chart, timeline, comparison, entity_list, forecast, limitation). Every type has a validated payload.
+
+The AI does not choose executable JavaScript, URLs or arbitrary React components. It chooses between supported response types; the application validates and renders them.
+
+Evidence references require an exact backing record, approved locator, source scope and resolution status.
+Forecast contract
+The frontend needs:
+- Item ID and unit.
+- Historical observations.
+- Forecast values and time steps.
+- Prediction interval, where supported.
+- Forecast method identifier/version.
+- Validation status and evaluation period.
+- Error metrics, where genuinely evaluated.
+- Input coverage and missing-data warnings.
+- Scenario assumptions.
+- Source references.
+Investigation contract
+An investigation contains a stable ID, owner, access rules, title, status, scope, chronological activities, typed findings, pinned evidence references, user notes, attached analytical views, report versions and audit metadata.
+
+A saved query result should not become a permanently valid statement merely because it was saved. The UI must distinguish saved at [time] from refreshed analysis.
+
+10. Suggested application route structure
+app/
+  (auth)/
+    sign-in/
+  (workspace)/
+    layout.tsx
+    overview/
+    ask/
+      [sessionId]/
+    explore/
+      [type]/
+        [id]/
+    intelligence/
+      quality/
+      maintenance/
+      materials/
+      models/
+    investigations/
+      [id]/
+    knowledge/
+      [documentId]/
+    governance/
+      sources/
+      access/
+      ai/
+      audit/
+    settings/
+  api/
+    query/
+    records/
+    investigations/
+    reports/
+
+
+Recommended organizational boundaries:
+src/
+  components/
+    ui/
+    app-shell/
+    data-table/
+    evidence/
+    charts/
+    document-viewer/
+    ai-results/
+  features/
+    ask/
+    explorer/
+    intelligence/
+    investigations/
+    knowledge/
+    governance/
+  domain/
+    entities/
+    evidence/
+    analytics/
+    security/
+  server/
+    auth/
+    data-access/
+    query-orchestration/
+  lib/
+    api/
+    validation/
+    formatting/
+    permissions/
+  styles/
+    tokens.css
+
+
+Keep data loading near its owning feature. Shared UI components should remain domain-neutral where practical, while domain-specific analysis logic belongs in a domain module.
+
+The AI response renderer, evidence drawer and entity-link components are central shared systems and must not be separately reinvented on each page.
+
+11. Synthetic demonstration environment
+The functional prototype should use one coherent fictional industrial aerospace dataset, deliberately separated from actual PAC information.
+Proposed fictional environment
+Engineering family: HA-200 Hydraulic Assemblies
+Flagship record: HA-204
+Associated material: HA-204-SEAL
+
+Use four simulated information sources:
+Source label	Contents	Cross-system identifiers
+Engineering Registry	Components, assemblies, specifications, revisions	Component ID, document ID, revision
+Production & Quality	Batches, inspections, nonconformances	Batch ID, component ID, inspection ID
+Maintenance History	Historical service events, observations	Component ID, event ID
+Material Ledger	Parts, usage transactions and stock snapshots	Material ID, component ID, transaction ID
+
+These are fictional system labels, not representations of PAC's actual applications.
+Dataset design requirements
+Every event must have realistic chronological relationships. A document revision referenced by an inspection must have a valid applicability period. A consumed material must correspond to a material record. A nonconformance attached to a batch must be discoverable through both the batch and the component.
+
+Include meaningful negative cases: a missing document, an ambiguous component identifier, a superseded revision, a disconnected source and a record that one role cannot access.
+
+The dataset should support multiple legitimate, freeform queries. It must not be constructed solely to return a scripted response to one question.
+Three initial query examples
+Engineering: “For HA-204, show the relevant specification revisions and inspection records associated with recurring discrepancies.”
+
+Quality: “Compare recorded nonconformances for the HA-200 family by production batch and show the underlying records.”
+
+Planning: “Estimate the next three months of demand for HA-204-SEAL using available consumption history, and show the forecast assumptions.”
+
+Each query should produce a visibly different result composition.
+
+12. Complete primary user journeys
+Journey A — Engineering investigation
+1. Engineer opens Ask BASIRAT, with the Engineering workspace selected.
+2. Enters a question about HA-204 involving engineering revisions and inspection discrepancies.
+3. BASIRAT interprets permitted sources, retrieves linked records and returns a summary, comparison and evidence list.
+4. Engineer selects a cited nonconformance, opening the evidence drawer.
+5. Engineer opens the applicable specification revision and sees the cited section.
+6. Engineer returns to the query, opens the component history and applies an inspection-period filter.
+7. Engineer saves the findings as an investigation.
+Success condition: The saved investigation preserves its supporting records, question, filters, document references and analytical limitations.
+Journey B — Quality analysis
+Quality engineer opens Intelligence → Quality, filters by component family and period, reviews the distribution of historical nonconformances, and opens the relevant filtered record set.
+
+From the selection, Ask BASIRAT can analyze the selected records and provide a reviewable comparison with related engineering revision information.
+
+Success condition: Every reported count agrees with the filtered source records; the AI does not present an inferred root cause as a verified fact.
+Journey C — Manufacturing record review
+Manufacturing engineer searches for a fictional production batch, opens its detail page, inspects associated components and inspection records, and follows a linked specification reference.
+
+Success condition: The relevant records can be found through either their original source category or the connected entity relationships.
+Journey D — Maintenance history
+Maintenance specialist searches for a component, opens the Maintenance tab, filters recorded events by date and category, and asks BASIRAT to summarize recurring observations.
+
+Success condition: The resulting summary cites recorded events and explicitly distinguishes recorded recurrence from a forecast of future failure.
+Journey E — Material planning
+Material planner opens Material Planning, selects HA-204-SEAL and a three-month horizon, reviews historical consumption and forecast intervals, adjusts one approved planning assumption and compares the result against the baseline.
+
+Success condition: The scenario is explicitly labeled, calculations remain coherent, and the user can inspect the data and method behind the forecast.
+Journey F — Technical management
+A senior technical manager opens a compact, role-relevant Overview, selects a recent investigation, reads its findings, and follows one result through to the underlying technical records.
+
+Success condition: The main finding is understandable without navigating through unrelated charts or technical controls, while detailed evidence remains available.
+Journey G — Reporting
+User opens a saved investigation, reviews evidence, identifies any unresolved citations, adds a brief note and previews the report.
+
+Success condition: The report distinguishes evidence-backed findings, AI-generated interpretation and user comments. A PDF export reflects the reviewed content and its permission rules.
+Journey H — Security evaluation
+An evaluator opens Governance, examines the configured inference environment and data-source status, then tests an account with reduced dataset access.
+
+Success condition: Restricted information is neither returned by search nor disclosed by BASIRAT. The attempted operation appears in appropriately authorized audit records.
+Journey I — Uncertain result
+A user requests an analysis requiring an unavailable revision or insufficient records.
+
+BASIRAT produces a partial or unsupported-result state, explains the missing evidence and suggests an appropriate refinement.
+
+Success condition: It does not invent a record, citation, explanation or forecast to satisfy the original wording.
+
+13. Frontend state, performance and security requirements
+State ownership
+State	Owner
+Current route/entity	URL
+Explorer filters, sorting, page	URL, synchronized with table
+Server records	TanStack Query or server-rendered data
+Current query input	Query composer component
+Active query session	Server-persisted session plus URL
+Evidence drawer	Shared UI state
+Authentication	Secure server session
+Permission evaluation	Backend authorization
+Theme and density	User preference
+Saved investigations	Persistent backend
+Forecast scenarios	Persistent or explicitly transient analysis state
+
+Do not store sensitive query content or protected records in persistent browser storage by default.
+Quality targets
+These are proposed engineering acceptance targets for the prototype, not performance claims.
+Area	Target
+Navigation feedback	Visible interaction response within 100ms under normal local conditions
+Typical route transition	Meaningful content or skeleton within 1 second on the demo environment
+Filter changes	Immediate visual feedback; asynchronous results clearly identified
+Keyboard	All primary workflows operable without a pointing device
+Accessibility	WCAG 2.2 AA as the design/test target
+Query cancellation	Cancels the active request and retains the question
+Error recovery	User input, context and prior completed findings remain intact
+Evidence navigation	Source opens without losing the investigation context
+Desktop	Main workflows usable at 1024px wide, optimized for 1440px+
+Testing	Automated end-to-end coverage for all flagship journeys
+
+WCAG 2.2 is a published W3C Recommendation with testable success criteria. 
+W3C
+
+Security-related frontend requirements
+- No authorization decision is based solely on whether a button is hidden.
+- Record and evidence APIs verify access on every request.
+- AI retrieval and subsequent citation opening use equivalent authorization policies.
+- Query text and retrieved content are treated as untrusted for rendering.
+- No execution of arbitrary model-produced markup, scripts or instructions.
+- External URLs are not automatically followed based on model output.
+- Model-generated suggested actions are validated against an allowlist.
+- Export operations perform server-side access checks.
+- Errors must not disclose inaccessible record names, counts or document excerpts.
+- User-facing audit and configuration indicators reflect real backend state.
+- Analytics/telemetry services must be configurable so that restricted deployments do not require external data transfer.
+For local LLM integration, the frontend should never assume a model is trustworthy merely because it runs on-premises. Retrieved documents may contain malicious instructions; query generation, tool invocation and evidence selection require separate controls.
+
+14. Testing strategy
+A product like BASIRAT needs more than visual snapshot testing.
+Testing layer	Required coverage
+Component	Inputs, tables, query composer, evidence drawer and document viewer
+Contract	Invalid AI blocks, missing citations, unexpected metadata, permission redactions
+Data integrity	Chart values equal underlying records; filters remain consistent
+End-to-end	Every primary journey in Section 12
+Accessibility	Keyboard, focus, contrast, labels, tables and dialogs
+Authorization	Cross-role data leakage and restricted export attempts
+AI behavior	Grounded answers, ambiguous identifiers, missing sources, malformed results
+Persistence	Refresh and resume query sessions, investigations and saved filters
+Regression	Record links, revision handling and analytical drill-down
+Visual	Key desktop widths, density modes, drawers and print/report views
+
+The hardest acceptance test is not whether the AI produces a convincing paragraph.
+
+It is whether an unexpected but valid question can produce a response whose numbers, scope, source links and UI representations are internally consistent.
+
+15. Implementation milestones
+1. Foundation and design system
+   
+   Build the Next.js application, authentication boundary, app shell, design tokens, common components, routes, error boundaries and fixture-data access interface.
+   
+   Completion criteria: Navigation works; typography, tables, states and themes are consistent; the component library is reusable.
+2. Unified engineering domain
+   
+   Implement fictional source records, normalized entities, cross-links, explorer filters, entity detail pages, timelines and source inspectors.
+   
+   Completion criteria: A user can navigate the flagship component across at least four simulated source domains with consistent references.
+3. BASIRAT intelligence workspace
+   
+   Build the query composer, query sessions, scope management, streaming states, structured result renderer, evidence references, clarification flow and context-preserving actions.
+   
+   Completion criteria: Multiple non-scripted questions against available data can produce appropriate structured responses with valid underlying source links.
+4. Engineering Knowledge
+   
+   Add the searchable document library, revision-aware viewer and citation-to-passage navigation.
+   
+   Completion criteria: The flagship engineering question can open the correct cited revision and return to its query.
+5. Domain intelligence
+   
+   Implement Quality, Maintenance and Material Planning analyses, including reproducible charts, source drill-down and an explainable material forecast.
+   
+   Completion criteria: Filters, results, underlying records and forecast methods remain coherent.
+6. Investigations and reports
+   
+   Add saved sessions, persistent investigations, notes, pinned evidence, report preview and permitted export.
+   
+   Completion criteria: A complete investigation survives refresh and can produce a source-referenced report.
+7. Governance and local-control demonstration
+   
+   Implement source-status views, model environment metadata, permissions demonstrations and audit history.
+   
+   Completion criteria: The security display reflects actual configured behavior in the prototype, including restricted access tests.
+8. Hardening and presentation readiness
+   
+   Complete accessibility, performance, UI regression, authorization, data-integrity and backup-demo testing.
+   
+   Completion criteria: The 10-minute flagship journey and several unscripted follow-up workflows run reliably without dead-end navigation.
+
+16. What must not be built in the first release
+Do not expand scope into an aircraft fleet command center, flight operations platform, combat intelligence system, autonomous maintenance approval system or ERP replacement.
+
+Do not build autonomous control features, operational decision authority or automatic engineering sign-off.
+
+Also defer:
+- Large-scale interactive knowledge graphs as the default interface.
+- Multiple independent AI agents with separate chatbot identities.
+- Elaborate predictive-failure dashboards without validated data.
+- Enterprise-wide workflow automation.
+- Unnecessary live telemetry and maps.
+- Decorative AI activity simulations.
+- Full collaborative approval chains before basic investigations work.
+The more BASIRAT attempts to resemble every enterprise platform simultaneously, the weaker the core experience becomes.
+
+17. Final master acceptance checklist
+Implementation readiness tracker
+
+0 / 17
+
+
+
+[ ] Brand identity and design system are consistently implemented
+
+[ ] Every primary route has a functional, useful page
+
+[ ] Role-relevant Overview avoids unnecessary dashboard clutter
+
+[ ] Global search and Ask BASIRAT are clearly distinguished
+
+[ ] Multiple natural-language queries work beyond a scripted example
+
+[ ] AI responses use validated structured result components
+
+[ ] Every cited finding can be traced to a permitted source
+
+[ ] Data Explorer supports filters, sorting and stable entity navigation
+
+[ ] Engineering documents support revision-aware citation navigation
+
+[ ] Quality and maintenance charts reconcile to underlying records
+
+[ ] Material forecasts disclose assumptions and uncertainty
+
+[ ] Investigations persist and produce evidence-backed reports
+
+[ ] Restricted access is enforced by the backend and reflected in the UI
+
+[ ] Governance accurately describes local processing and test status
+
+[ ] Synthetic content cannot be mistaken for actual PAC data
+
+[ ] Keyboard, accessibility and error-recovery testing pass
+
+[ ] Flagship user flows can be completed without dead ends
+
+ Copy checklist
+
+18. Final recommendation
+The architecture and experience should be built around one shared engineering information model and one excellent AI investigation flow. Every additional screen should either help initiate, deepen, verify, preserve or govern that investigation.
+
+My final product choices are:
+
+Default landing: A restrained, role-relevant Overview with immediate access to Ask BASIRAT.
+
+Hero capability: Natural-language cross-system analysis that returns useful visual and structured answers.
+
+Differentiating interaction: Click a finding, inspect its source, navigate the connected engineering history and return without losing context.
+
+Supporting analytics: Quality, maintenance and material forecasting with appropriate evidence and uncertainty.
+
+Visual style: Precision Intelligence—dark navigation, highly legible neutral workspace, restrained blue/teal accents and disciplined typography.
+
+Technical foundation: Next.js and TypeScript, owned component primitives, typed data contracts, persistent domain records and a structured AI response system.
+
+Product-quality standard: Every visible capability must behave consistently, including unexpected questions, missing records, access restrictions and imperfect data.
+
+The central design principle for BASIRAT AI is:
+
+An engineer should be able to ask a question, understand the answer, inspect its evidence and continue the investigation without needing to know which original system contained the information.
+
+That is the capability the entire frontend should make tangible—and the standard against which its implementation should be evaluated.
