@@ -44,6 +44,17 @@ or provider provisioning is performed here.
 3. Complete dependency-ready slices; prove deployed real text/voice in BAS-002.
 4. Record actual tests/builds, independent interface reviews and limitations.
 
+## Implementation execution
+
+Execution began at approved baseline `d6c327d34a853f3147a0f535bd7b047001ca1bd6` in a clean checkout. Integration branch: `codex/baseerat-integration`. The live assignment/recovery record is [agent-state.md](agent-state.md).
+
+- BAS-001 / issue #2 is in progress in an isolated worktree with a fresh implementer. No ticket is complete and no dependent ticket has been released.
+- Created isolated hosted Supabase project `baseerat-ai-dev` (`exlhtyyxlytrlpsnrwvo`, Mumbai). Verified healthy status and empty public schema; fetched public configuration without printing keys. Schema/account provisioning is pending implementation review and an administrative key configured outside chat.
+- Vercel connection can list existing projects, but team-scoped project creation returned 403. Requested the provider's team authorization link; no Baseerat Vercel project or deployment exists yet.
+- User selected OpenAI configuration for both local and Vercel environments. No key was present in the initial process; real text/voice checks remain unverified.
+- Node 24.22.1 verified; implementer obtained task-local npm and is freezing compatible dependencies. Docker daemon unavailable; hosted isolated database checks will be distinguished from deterministic tests.
+- Browser inspection surface is available through the in-app browser. No rendered UI review, real-account permission matrix or microphone observation has passed yet.
+
 ## Persistence and evidence
 
 No application package, feature, migration, test implementation, provider

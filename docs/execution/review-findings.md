@@ -47,3 +47,14 @@ successful build requires an independent six-domain interface review.
 
 No application build or UI pass has occurred during planning. A corrected
 contract does not count as an executed acceptance test.
+
+## Implementation findings
+
+| ID | Finding | State / resolution |
+| --- | --- | --- |
+| EX-001 | No hosted Supabase project existed at implementation start. | Created isolated `baseerat-ai-dev` after explicit organization choice; healthy and empty schema verified. Real accounts/RLS still pending. |
+| EX-002 | Vercel team-scoped operations return 403 despite unscoped project-list access. | Provider team consent requested; no project/deployment claimed. Local implementation continues. |
+| EX-003 | Administrative Supabase and OpenAI keys absent from initial environment. | Requested ignored local configuration; never chat secrets. Account and provider acceptance remain open. |
+| EX-004 | npm absent from PATH and Docker daemon unavailable. | Implementer uses task-local npm; hosted test project replaces unavailable local Docker only for explicitly isolated checks. |
+| EX-005 | BAS-001 asks for private-session isolation, while BAS-002 owned all session tables. | Orchestrator moved only the minimal private query_sessions foundation/owner RLS into BAS-001. BAS-002 retains turns/run/operation/voice and session behavior. Updated migration ownership in implementation-plan.md; verify the real session table rather than an unrelated probe. No additional product workflow introduced. |
+| EX-006 | Vercel now defaults new projects to Node 26, while approved application baseline is Node 24. | Implementer instructed to pin `engines.node` to `24.x`; deployed runtime still requires verification. [Official announcement](https://vercel.com/changelog/node-js-26-lts-is-now-generally-available-on-vercel). |
