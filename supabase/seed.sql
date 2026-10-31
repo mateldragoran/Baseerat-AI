@@ -40,5 +40,9 @@ begin
     (8,'Actuator seal kit',null,jsonb_build_object('material_code','HA-204-SEAL','description','Seal kit associated with the HA-204 part definition.','canonical_unit','kit','related_part_id','10000000-0000-4000-8000-000000000001'))
   ) as fixture(n,title,revision,payload);
   update public.records set current_version_id = ('20000000-0000-4000-8000-' || right(id::text,12))::uuid;
+  update private.datasets d set manifest_hash = (
+    select encode(sha256(convert_to(string_agg(v.record_id::text || ':' || v.id::text || ':' || v.content_hash, E'\n' order by v.record_id,v.id),'UTF8')),'hex')
+    from public.record_versions v where v.dataset_id=d.id
+  ) where d.id=dataset;
 end $$;
 commit;

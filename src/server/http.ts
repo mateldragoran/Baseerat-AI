@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import { AccessError } from './access';
 
 export const noStore = { 'Cache-Control': 'private, no-store, max-age=0', Vary: 'Cookie' };
-export function success(data: unknown) {
-  return NextResponse.json({ data, requestId: crypto.randomUUID(), meta: { schemaVersion: 1, dataAsOf: new Date().toISOString(), warnings: [], nextCursor: null } }, { headers: noStore });
+export function success(data: unknown, dataAsOf: string | null = null) {
+  return NextResponse.json({ data, requestId: crypto.randomUUID(), meta: { schemaVersion: 1, dataAsOf, generatedAt: new Date().toISOString(), warnings: [], nextCursor: null } }, { headers: noStore });
 }
 export function failure(error: unknown) {
   const known = error instanceof AccessError;

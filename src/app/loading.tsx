@@ -1,0 +1,1 @@
+export default function Loading() { return <main className="standalone-state" role="status"><span className="eyebrow">Baseerat AI</span><h1>Loading your workspace…</h1><p>Checking your session and permitted source records.</p></main>; }

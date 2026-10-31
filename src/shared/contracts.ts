@@ -13,6 +13,18 @@ export const actorSchema = z.object({
 export type Actor = z.infer<typeof actorSchema>;
 
 export const recordKindSchema = z.enum(['part_family', 'part_definition', 'part_revision', 'assembly', 'batch', 'physical_unit', 'inspection', 'nonconformance', 'maintenance_event', 'document', 'material', 'material_transaction', 'material_coverage', 'stock_snapshot']);
+const id = z.uuid();
+const date = z.iso.date();
+export const recordPayloadSchemas = {
+  part_family: z.object({ family_code: z.string(), description: z.string() }).strict(),
+  part_definition: z.object({ family_id: id, description: z.string(), lifecycle_status: z.enum(['active','retired']), canonical_unit: z.string() }).strict(),
+  part_revision: z.object({ part_id: id, label: z.string(), effective_from: date, effective_to: date.nullable() }).strict(),
+  batch: z.object({ part_revision_id: id, started_on: date, completed_on: date.nullable(), production_quantity: z.number().int().positive() }).strict(),
+  physical_unit: z.object({ part_revision_id: id, batch_id: id, serial_number: z.string() }).strict(),
+  inspection: z.object({ unit_id: id, batch_id: id, inspected_at: date, status: z.enum(['scheduled','in_progress','completed','cancelled']), method: z.string(), recorded_document_version_id: id.nullable(), discrepancy_flag: z.boolean() }).strict(),
+  maintenance_event: z.object({ unit_id: id, event_at: date, category: z.string(), recorded_observation: z.string(), recorded_document_version_id: id.nullable() }).strict(),
+  material: z.object({ material_code: z.string(), description: z.string(), canonical_unit: z.string(), related_part_id: id }).strict(),
+} as const;
 export const recordResponseSchema = z.object({
   id: z.uuid(), displayId: z.string(), kind: recordKindSchema, title: z.string(),
   source: z.object({ id: sourceIdSchema, label: z.string(), availability: z.enum(['available', 'unavailable']), cachedAvailable: z.boolean() }),
@@ -20,7 +32,10 @@ export const recordResponseSchema = z.object({
   dataAsOf: z.iso.datetime({ offset: true }), fields: z.record(z.string(), z.unknown()),
   access: z.literal('read_only'),
   provenance: z.object({ datasetId: z.uuid(), contentHash: z.string(), versionNo: z.number().int().positive() }),
-}).strict();
+}).strict().superRefine((record, context) => {
+  const payloadSchema = recordPayloadSchemas[record.kind as keyof typeof recordPayloadSchemas];
+  if (!payloadSchema || !payloadSchema.safeParse(record.fields).success) context.addIssue({ code: 'custom', path: ['fields'], message: 'Source payload does not match its supported record kind.' });
+});
 export type EngineeringRecord = z.infer<typeof recordResponseSchema>;
 
 export const toolInvocationSchema = z.object({
