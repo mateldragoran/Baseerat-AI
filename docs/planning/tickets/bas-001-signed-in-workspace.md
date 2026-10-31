@@ -1,6 +1,6 @@
 # BAS-001: Sign in and inspect a permission-scoped record
 
-Status: ready-for-agent; approved for implementation on 31 October 2026.
+Status: implementation in progress; acceptance remains open. Approved on 31 October 2026.
 Start only after the listed blockers are complete.
 GitHub issue: [#2](https://github.com/mateldragoran/Baseerat-AI/issues/2).
 Parent specification: [GitHub issue #1](https://github.com/mateldragoran/Baseerat-AI/issues/1).
@@ -37,6 +37,7 @@ None; can start under the recorded implementation approval.
 - Deliver sign-in/sign-out, accessible shell, initial purpose/next action, evidence summary, no-store responses and cache clearing on account change.
 - Use explicit grants/RLS/private defaults and prevent another user's private-session access; no client role authority.
 - Establish shared record, tool result, actor and error schemas for later tickets; configure isolated test data.
+- Establish minimal private query_sessions ownership and safe authentication audit foundations; verify live session validity for protected reads after logout. See execution review findings EX-005/EX-007 for the migration ownership reconciliation; BAS-002/BAS-012 extend these foundations.
 
 ## Expected files/modules
 
