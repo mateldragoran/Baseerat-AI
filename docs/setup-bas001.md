@@ -15,6 +15,21 @@ maintenance operator. Then execute supabase/seed.sql once. It is idempotent for 
 and never silently redates existing records. The eight records are fictional source fixtures;
 origin is recorded in private.datasets. Full history/relations are BAS-003 work.
 Public registration is excluded: disable sign-ups in project Auth settings and provision accounts.
+The local config disables both general and email sign-up. This file does not configure hosted
+Auth automatically: the operator must disable hosted Authentication sign-ups and verify the
+public `/auth/v1/settings` response reports `disable_signup: true` before acceptance/deployment.
+
+The first hosted migrations were applied through MCP, which stamped their application times.
+Tracked filenames now match the verified hosted history so future CLI synchronization does not
+interpret the original CLI creation versions as new migrations. The SQL bytes are unchanged;
+do not reapply these to the existing development project.
+
+| Original CLI creation filename | Verified hosted/tracked filename |
+| --- | --- |
+| 20261031184631_bas001_identity_catalogue.sql | 20261031184852_bas001_identity_catalogue.sql |
+| 20261031185125_bas001_integrity.sql | 20261031185614_bas001_integrity.sql |
+| 20261031190339_bas001_live_sessions_auth_audit.sql | 20261031190745_bas001_live_sessions_auth_audit.sql |
+| 20261031190841_bas001_auth_audit_insert_only.sql | 20261031211048_bas001_auth_audit_insert_only.sql |
 
 Create ignored `.env.maintenance` with NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY and
 BASEERAT_ACCOUNT_PASSWORD of at least 16 characters (or BASEERAT_PRESENTER_PASSWORD,
@@ -37,6 +52,9 @@ supabase/tests/bas001_access.sql in the isolated database to check actual Postgr
 The SQL policy fixtures bypass password authentication and are distinct from real account tests.
 
 Run Playwright via `npm run test:acceptance` against the running production server.
+Install its browser first with `npx playwright install chromium`. A task-local installation is
+supported by setting PLAYWRIGHT_BROWSERS_PATH to an ignored `.tools/browsers` absolute path
+for both installation and tests; the current checkout uses this approach.
 Set BASEERAT_ACCEPTANCE_URL for a deployed URL and BASEERAT_ACCOUNT_PASSWORD for real account
 journeys. Without the password, those tests explicitly skip; signed-out tests still run.
 Use current Chrome and Edge; record exact tested versions and responsive/manual review evidence.
@@ -44,6 +62,14 @@ Use current Chrome and Edge; record exact tested versions and responsive/manual 
 No user data is stored in localStorage/sessionStorage or a persisted browser query cache.
 Authentication remains cookie-backed. Server-rendered data and JSON use private/no-store,
 logout revokes the current Auth session and uses full navigation to discard rendered state.
+Auth cookies are HttpOnly and SameSite=Lax; HTTPS origins also use Secure. The only privileged
+database helper resolves the signed JWT's own Auth session state, with no lookup arguments.
+Live-session RLS denies source/action/private-session reads immediately after logout or session
+expiry. Auth audit records are private, append-only, and contain actor/session IDs, outcome,
+request ID and timestamp, never passwords, email addresses or question text. After Auth confirms
+logout, a short-lived user-JWT client is used exclusively to append its completion event; it
+cannot read protected source content. If audit delivery fails after logout, the signed-out page
+reports that recording failure without falsely claiming the session is still active.
 Source versions are immutable and denied/unknown IDs use a neutral unavailable response.
 Both direct database requests and application requests remain subject to current source grants.
 

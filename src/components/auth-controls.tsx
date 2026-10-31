@@ -40,7 +40,8 @@ export function SignOut() {
       const response = await fetch('/api/auth/sign-out', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ requestKey: crypto.randomUUID() }) });
       if (!response.ok) throw new Error();
       // Full navigation discards all rendered protected state and any future query cache.
-      window.location.replace('/sign-in');
+      const result = await response.json();
+      window.location.replace(result.data.auditRecorded === false ? '/sign-in?notice=audit-unavailable' : '/sign-in');
     } catch { setMessage('Unable to sign out. Check your connection and try again.'); busy.current = false; setPending(false); }
   }}><LogOut size={17} aria-hidden="true" />{pending ? 'Sign out · Waiting…' : 'Sign out'}</button><div role="alert">{message}</div></div>;
 }

@@ -9,6 +9,7 @@ export async function userDatabase() {
   if (!config) throw new Error('CONFIGURATION_UNAVAILABLE');
   const jar = await cookies();
   return createServerClient(config.url, config.key, {
+    cookieOptions: { httpOnly: true, sameSite: 'lax', secure: process.env.APP_ORIGIN?.startsWith('https://') ?? false },
     global: { fetch: (input, init) => fetch(input, { ...init, cache: 'no-store' }) },
     cookies: {
       getAll: () => jar.getAll(),

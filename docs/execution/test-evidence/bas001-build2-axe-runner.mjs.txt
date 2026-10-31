@@ -1,0 +1,49 @@
+import { chromium } from '../node_modules/playwright/index.mjs';
+import { writeFile, readFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
+
+const browser = await chromium.launch();
+const axePackage = JSON.parse(await readFile('.tools/axe/package/package.json','utf8'));
+const report = { browser: browser.version(), axe: axePackage.version, buildId: (await readFile('.next/BUILD_ID','utf8')).trim(), baseUrl: 'http://localhost:3000', checks: [] };
+async function theme(page, appearance) {
+  const wanted = appearance === 'dark' ? 'Use dark theme' : 'Use light theme';
+  const button = page.getByRole('button', { name: wanted, exact: true });
+  if (await button.count()) await button.click();
+}
+async function audit(page, state, appearance, width) {
+  await theme(page,appearance);
+  await page.addScriptTag({ path: resolve('.tools/axe/package/axe.min.js') });
+  const result = await page.evaluate(async () => window.axe.run(document, {
+    runOnly: { type: 'tag', values: ['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa','best-practice'] },
+  }));
+  const entry = { state, theme: appearance, width, url: page.url(), passes: result.passes.length,
+    violations: result.violations.map(({id,impact,description,helpUrl,nodes})=>({id,impact,description,helpUrl,nodes:nodes.map(({target,failureSummary})=>({target,failureSummary}))})),
+    incomplete: result.incomplete.map(({id,impact,nodes})=>({id,impact,targets:nodes.map(node=>node.target)})),
+  };
+  report.checks.push(entry);
+  console.log(JSON.stringify({ state, theme: appearance, width, passes: entry.passes, violations: entry.violations.map(item=>item.id), incomplete: entry.incomplete.map(item=>item.id) }));
+}
+try {
+  for (const width of [1440,320]) {
+    const context = await browser.newContext({ viewport: { width, height: 900 } });
+    const page = await context.newPage();
+    await page.goto('http://localhost:3000/sign-in');
+    await page.getByRole('heading',{name:'Sign in to your workspace'}).waitFor();
+    for (const appearance of ['light','dark']) await audit(page,'initial',appearance,width);
+    await page.getByLabel('Email address').fill('axe-audit@example.invalid');
+    await page.getByLabel('Password',{exact:true}).fill('not-a-valid-account-password');
+    await page.getByRole('button',{name:'Sign in',exact:true}).click();
+    const alert = page.getByRole('region',{name:'Sign in to your workspace'}).getByRole('alert');
+    await alert.filter({hasText:'Check your email and password'}).waitFor({timeout:15000});
+    for (const appearance of ['light','dark']) await audit(page,'invalid_credentials',appearance,width);
+    await page.goto('http://localhost:3000/sign-in?notice=audit-unavailable');
+    await page.getByRole('status').filter({hasText:'Sign-out completed'}).waitFor();
+    for (const appearance of ['light','dark']) await audit(page,'audit_unavailable_notice',appearance,width);
+    await context.close();
+  }
+} finally {
+  await writeFile('.tools/axe-signed-out-results.json',JSON.stringify(report,null,2));
+  await browser.close();
+}
+console.log(JSON.stringify({axe:report.axe,browser:report.browser,checks:report.checks.length,violationInstances:report.checks.reduce((n,row)=>n+row.violations.length,0)}));
+if (report.checks.some(row=>row.violations.length)) process.exitCode=1;

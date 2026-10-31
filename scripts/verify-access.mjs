@@ -30,11 +30,19 @@ for (const [name, count] of Object.entries(expected)) {
   assert.ok(writes.error,'Ordinary users cannot edit authorization');
   const raw = await db.from('query_sessions').select('*');
   assert.ok(raw.error,'Raw sessions are absent from public Data API');
+  const auditRaw = await db.from('audit_events').select('*');
+  assert.ok(auditRaw.error,'Raw audit is absent from public Data API');
   const actions = await db.from('action_grants').select('action');
   assert.equal(actions.error,null);
   const available = actions.data.map(row => row.action);
   assert.equal(available.includes('admin'),name === 'presenter');
   assert.equal(available.includes('review'),name === 'presenter' || name === 'reviewer');
-  await db.auth.signOut();
-  console.log(`${name}: authenticated source/action/self-profile/forged-role/private-API/write denials passed.`);
+  const snapshot = login.data.session.access_token;
+  const signOut = await db.auth.signOut({ scope: 'local' });
+  assert.equal(signOut.error,null);
+  const revoked = createClient(url,key,{auth:{persistSession:false,autoRefreshToken:false},global:{headers:{Authorization:`Bearer ${snapshot}`}}});
+  const afterLogout = await revoked.from('records').select('id');
+  assert.equal(afterLogout.error,null);
+  assert.equal(afterLogout.data.length,0,'Logged-out unexpired JWT cannot read sources');
+  console.log(`${name}: authenticated source/action/self-profile/forged-role/private-API/write/logout denials passed.`);
 }

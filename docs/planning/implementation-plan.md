@@ -196,8 +196,15 @@ Dependency-ready does not imply collision-free changes to the same files.
 
 ### Migration ownership and parallel prerequisites
 
-BAS-001 owns identity/source/core record/dataset foundations. BAS-002 owns the
-initial session/run/operation/voice tables. BAS-003 owns relationships and durable
+BAS-001 owns identity/source/core record/dataset foundations and the minimal
+private query_sessions table with owner-only RLS, so its private-session
+isolation acceptance can be tested against the actual application table.
+BAS-001 also owns the minimal private authentication audit-event foundation
+and narrow own-session validity predicate required for truthful sign-in/out
+events and immediate post-logout data denial. BAS-012 adds Governance read/control
+surfaces over those actual events; it does not invent historical activity.
+BAS-002 extends session behavior and owns turns/run/operation/voice tables.
+BAS-003 owns relationships and durable
 record sets; its nullable run association remains null until BAS-008 adds the
 run foreign key after both branches exist. BAS-006 owns passages/private source
 files; BAS-007 owns usage/coverage tables. BAS-008 owns artifact dependencies,

@@ -1,9 +1,22 @@
 # Baseerat AI
 
-Approved specification and implementation plan for a functional engineering
-intelligence demonstration. On 31 October 2026 the user approved the complete
-package, purposeful motion guidance and 15-ticket breakdown, and authorized the
-build. Application implementation has not started in this planning handoff.
+Baseerat AI is an engineering intelligence demonstration. The complete
+specification, purposeful motion guidance and 15-ticket plan were approved for
+implementation on 31 October 2026.
+
+The repository now contains a **BAS-001 implementation checkpoint; acceptance is
+still open**. Its current local application includes password sign-in/sign-out,
+Overview, identifier lookup, persisted source-version detail, live source/action
+grants, private-session access controls and auth audit foundations. Hosted
+database policy tests pass with isolated rollback fixtures. This does not prove
+the four real-account browser journeys or deployed behavior.
+
+See [BAS-001 setup and commands](docs/setup-bas001.md),
+[ticket evidence and limitations](docs/execution/ticket-notes/bas-001.md), and the
+[central recovery ledger](docs/execution/agent-state.md) for the exact current
+state. Real account provisioning, hosted signup configuration, Vercel deployment
+and remaining interface/assistive-technology coverage are explicit acceptance
+gates. Preserve the working branch/worktree until those gates are verified.
 
 Start with:
 
@@ -19,10 +32,13 @@ Start with:
 - [Builder handoff](docs/execution/builder-handoff.md)
 - [Planning audit](docs/execution/planning-audit.md)
 
-The application will use Vercel, Supabase and hosted OpenAI APIs. Its synthetic
+The approved full application uses Vercel, Supabase and hosted OpenAI APIs. Its synthetic
 source data is documented internally; normal presentation has no mandatory
 synthetic-data badge. The presenter handles disclosure. English documents and
-bilingual text/live voice support the agreed investigation workflows.
+bilingual text/live voice are planned for the agreed investigation workflows.
+AI, voice, connected analytical workspaces, saved investigations, reports and
+Governance are later tickets; their presence in the plan is not a claim that
+they are implemented in this checkpoint.
 
 Future coding agents must read [AGENTS.md](AGENTS.md), the ticket and its
 specification references. Begin with BAS-001 under the recorded approval; follow
