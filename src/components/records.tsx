@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from './navigation-link';
 import { ArrowUpRight, FileCheck2, Layers, Wrench, Package } from 'lucide-react';
 import type { EngineeringRecord } from '@/shared/contracts';
 export function formatDate(value: string, includeTime = false) {
