@@ -7,6 +7,8 @@ Begin with BAS-001; all completion and review gates remain binding.
 
 ## Delivery principles
 
+Execution override, 1 November 2026: the user will provide the OpenAI key later and authorized building AI features before live-provider tests. Continue implementation against established interfaces with deterministic contract verification; leave real model/text/voice compatibility and acceptance explicitly unverified until credentials arrive. Missing OpenAI credentials alone no longer prevent dependent AI implementation. Other authorization, review and acceptance requirements remain binding.
+
 Build complete observable slices: a person can sign in, perform the scoped
 task, inspect its real result, and exercise its important failure path.
 Foundational work is included in the first usable sign-in/record slice, not

@@ -4,11 +4,13 @@ Updated: 1 November 2026, Asia/Karachi. Owner: root orchestrator.
 
 ## Current outcome
 
-BAS-001 is implemented to a tested checkpoint but is not accepted. No ticket is complete, no dependent ticket is released, and no application ticket has been merged into integration. Required real Auth, deployment and rendered coverage remain open.
+BAS-001 has resumed with real accounts and is not yet accepted. No ticket is complete and no application ticket has been merged into integration. Deployment and complete rendered coverage remain open.
+
+User steering on 1 November: administrative key configured; OpenAI key will arrive later. Continue AI feature implementation and defer live OpenAI acceptance until the key is provided. Keep local/contract verification separate and never substitute mocked production success. This supersedes the earlier requirement to stop dependent AI implementation solely for missing OpenAI credentials; real-provider acceptance remains open.
 
 - Approved baseline/actual clean starting commit: d6c327d34a853f3147a0f535bd7b047001ca1bd6.
 - Integration: codex/baseerat-integration, D:/Projects/Baseerat; last reconciled tip 8061ceb before this ledger update. Contains execution/contract records, not accepted application code.
-- Ticket: codex/bas-001, D:/Projects/Baseerat-worktrees/bas-001; final checkpoint 6e70bbb86ad98958d9ca4b84ab9c23c7376fd2e6 includes integration-doc tip f92f7a7. Builder /root/bas001 finished this checkpoint; acceptance is externally gated. Both worktrees clean at handoff; application source unchanged from build2.
+- Ticket: codex/bas-001, D:/Projects/Baseerat-worktrees/bas-001; current code checkpoint4000167 / test-evidence checkpoint80df1d8. Builder /root/bas001 resumed and fresh reviewer /root/ui_bas001_build3 is running. Prior checkpoint6e70bbb remains preserved; no ticket acceptance claimed. Reviewer screenshot assets may be untracked while its report is in progress; leave them untouched.
 - Source ownership: builder owns app/dependencies/migrations/tests/setup/README and ticket notes. Root owns shared execution records, provider mutations, tracker and integration. No concurrent implementers.
 - Ownership corrections EX-005/007: BAS-001 includes minimal private query_sessions, safe auth audit base and own-session validity predicate. BAS-002 retains turns/runs/voice/operations; BAS-012 retains Governance surfaces.
 
@@ -40,7 +42,11 @@ All four hosted migrations are applied, verified in migration history. Do not re
 
 MCP stamped apply times differently from CLI-created filenames. Source-only renames committed at e253054 align all four tracked filenames with observed hosted versions; SHA256 before/after identical, mapping in ticket setup/notes. No remote history mutation or SQL replay.
 
-Seed persisted once:8records/8versions/4sources/2private buckets; payload hashes and dataset manifest verified. Latest post-test check: Authusers0/Authsessions0/profiles0/auditevents0, source records8. No real accounts created yet.
+Seed persisted once:8records/8versions/4sources/2private buckets; payload hashes and dataset manifest verified. Root verified the newly configured modern administrative key matches the isolated project, then executed reviewed scripts/provision-accounts.mjs successfully. Four real active profiles/accounts now exist, one of each role. Passwords/secret values were never printed.
+
+Ignored .env.acceptance prepared from explicit public configuration/password allowlist, without administrative key. Real scripts/verify-access.mjs passed all four accounts: source/action membership, own profile, forged metadata, authorization write denial, private Data API denial and logged-out JWT source denial. Browser first failed only an ambiguous test link selector; builder corrected it, then both real Playwright tests passed. Presenter/restricted signed in, opened HA-204, received maintenance200/404 contrast, signed out and returned via browser Back to sign-in. Traces off; real HttpOnly/SameSite=Lax cookies verified. These are now genuine Auth/browser results, distinct from prior transactional fixtures.
+
+Builder /root/bas001 resumed in the same ticket worktree to complete real auth/audit browser assertions and fix retained icon/primary-heading recommendations. Next successful build requires a fresh independent reviewer for full authenticated affected flows. No source/review success is inferred in advance.
 
 Hosted policy tests passed from fc19f6c: supabase/tests/bas001_access.sql and bas001_auth_audit.sql. Coverage includes four-profile source/action grants, forged metadata, live grant/session revocation, expired sessions, private owner/cross-owner boundaries, inactive/anonymous/source-write denial; truthful own lifecycle audit, duplicate suppression, premature/revoked/cross-actor/raw-read/update/delete/anonymous denial. Fixtures rolled back. These are deterministic database identity fixtures, not password-auth/browser/provider acceptance.
 
@@ -50,10 +56,11 @@ Anonymous REST /records denied401/42501; private schema denied406/PGRST106. Late
 
 ## External prerequisites still missing
 
-- SUPABASE_SECRET_KEY blank in ignored ticket .env.maintenance. File contains project URL and a generated account password; values never printed. Normal application never receives this key. User must configure securely before accounts:provision.
+- SUPABASE_SECRET_KEY configured in ignored ticket .env.maintenance; verified and provisioning completed. Normal application does not receive this key. File values remain private.
 - OPENAI_API_KEY absent from ignored .env.local and process/user environment. User requested both local/Vercel configuration. No real text/voice inference performed.
-- Hosted Auth /auth/v1/settings reports disable_signup=false; operator must disable hosted public signup before acceptance/deployment. Local config already disables it. Connector has no Auth-config mutation; browser fallback requires dashboard login.
-- Vercel team_i90ZKPuQa1b1CMJtPGDhAx2k still returns403 on resumed check. Fresh authorize_team_access link shown to user; no Baseerat project/deployment created. Verify access before retrying original scoped creation. Do not use another team to bypass this gate.
+- Hosted signup setting completed by user and verified through public Auth settings: HTTP200, disable_signup=true. Local and hosted public signup are disabled.
+- Vercel team access completed and verified: team_i90ZKPuQa1b1CMJtPGDhAx2k / tauheed-akbars-projects. Git app was restricted; initial Git-linked project creation failed400 with no project created. User added Baseerat-AI to installation68232329; repository1437379009 became visible, then root created Git-linked project baseerat-ai / prj_4DtpdfPsyMOAKReOlad8lMG55AMU successfully. Node24.x, Fluid compute and bom1 region configured. Verified assigned project domain baseerat-ai.vercel.app. Public Supabase URL/key configured for app targets; APP_ORIGIN=https://baseerat-ai.vercel.app configured for production. No administrative key/password/OpenAI key uploaded.
+- Automatic preview deployments temporarily disabled during controlled initial verification so recovery checkpoint publication does not launch unreviewed builds. Initial reviewed deployment will be created explicitly from the checkpoint Git SHA; do not merge main for deployment. Restore preview automation once per-preview origin/cookie verification is established. No deployment has been created yet.
 
 ## Publication and recovery
 
@@ -64,8 +71,8 @@ Connected GitHub account mateldragoran and repository access verified. Issue2 re
 - Shell push was canceled at a separate Git Credential Manager login. Use connected GitHub tree/commit/ref tools; compare remote tree SHA with local source tree. API snapshot commit identity differs, so record both IDs. Never snapshot ignored env/.tools files.
 
 Next safe actions:
-1. Build2 independent review and bounded axe run are complete; preserve explicit missing coverage and two remaining recommendations. No further app rebuild is needed for this externally gated checkpoint.
-2. Builder merged supplied integration-doc tip and returned final checkpoint above. No implementer/reviewer remains running; resume the existing BAS-001 agent when its prerequisites arrive, or replace it with these recovery pointers.
+1. Build3 source4000167 / BUILD_ID dL1D7nSp0zu6Cl6gxqxR9 passed; production localhost runtime now PID19408. Persistent H1/icon recommendations fixed. Real two-journey browser checks and all12 signed-out axe scopes passed (exit0). Fresh independent authenticated reviewer /root/ui_bas001_build3 is running; app/UI source frozen. No pass inferred before its report.
+2. Wait for independent build3 report; builder resolves actual findings and rebuilds/reports for another fresh review if needed. Keep app/UI frozen during each review. No new implementer ticket dispatched yet.
 3. Root publishes current orchestration docs to remote integration branch and updates issue2. Preserve incomplete branch/worktree; do not integrate as accepted or release dependencies. Historical diff whitespace warnings are confined to existing CRLF documentation and the preserved report EOF blank line; working-tree checks are clean. Reports are preserved unchanged.
-4. Once secure inputs/team access arrive, provision real accounts, disable hosted signup, verify authenticated API/RLS/browser/cookie/logout/audit and deployed/redeployed journeys, then finish independent rendered coverage. BAS-002 follows accepted BAS-001.
+4. Operator/account/project prerequisites now verified. Publish the reviewed source checkpoint and create the controlled first Vercel deployment; verify HTTPS-origin/cookies, real authenticated journeys, redeployment persistence and a fresh deployed-flow review. BAS-002 follows the foundation under the recorded live-OpenAI deferral; do not fabricate acceptance.
 5. After interruption, reread this ledger and ticket notes; inspect branches/worktrees/diffs/processes and hosted migration history before replaying any mutation. Resume surviving agents or dispatch replacements with these pointers.
