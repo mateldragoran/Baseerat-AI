@@ -1,0 +1,51 @@
+{
+  "buildId": "I-YbrUnWFuGCX8s5bA2V0",
+  "browser": "156.0.8078.4",
+  "fixture": "isolated Node upstream-response preload; real Auth/RLS reads; no hosted source/grant mutation",
+  "checks": [
+    {
+      "mode": "server-unavailable",
+      "origin": "http://127.0.0.1:3110",
+      "assertions": {
+        "errorRendered": true,
+        "retryRecovered": true
+      }
+    },
+    {
+      "mode": "cached-source",
+      "origin": "http://127.0.0.1:3110",
+      "assertions": {
+        "cachedWarningRendered": true,
+        "detailStatus": 200,
+        "recovered": true
+      }
+    },
+    {
+      "mode": "no-cache-source",
+      "origin": "http://127.0.0.1:3110",
+      "assertions": {
+        "errorRendered": true,
+        "detailStatus": 503,
+        "retryRecovered": true
+      }
+    },
+    {
+      "mode": "logout-once",
+      "origin": "http://127.0.0.1:3110",
+      "assertions": {
+        "failureRendered": true,
+        "contextStatusAfterFailure": 200,
+        "retryRecovered": true
+      }
+    },
+    {
+      "mode": "audit-signout",
+      "origin": "http://127.0.0.1:3110",
+      "assertions": {
+        "auditUnavailableNotice": true,
+        "signedOut": true,
+        "auditRecorded": false
+      }
+    }
+  ]
+}

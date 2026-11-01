@@ -1,0 +1,89 @@
+import {fork} from 'node:child_process';
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {parseEnv} from 'node:util';
+import {resolve} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {chromium} from '../node_modules/playwright/index.mjs';
+const acceptance=parseEnv(await readFile('.env.acceptance','utf8'));
+const browser=await chromium.launch();
+const modes=process.argv.slice(2).length ? process.argv.slice(2) : ['server-unavailable','cached-source','no-cache-source','logout-once','audit-signout'];
+const results={buildId:(await readFile('.next/BUILD_ID','utf8')).trim(),browser:browser.version(),fixture:'isolated Node upstream-response preload; real Auth/RLS reads; no hosted source/grant mutation',checks:[]};
+await mkdir('.tools/qa-evidence',{recursive:true});
+const delay=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+async function changeMode(child,fixture) {
+  if(!child.connected)throw new Error('QA fixture process unavailable');
+  await new Promise((resolve,reject)=>{child.once('message',resolve);child.send({fixture},error=>{if(error)reject(error)});});
+}
+async function tokenFromRealCookies(context) {
+  const cookies=(await context.cookies()).filter(cookie=>/sb-.*-auth-token(?:\.\d+)?$/.test(cookie.name)).sort((a,b)=>a.name.localeCompare(b.name));
+  const encoded=cookies.map(cookie=>cookie.value).join('');
+  return encoded ? JSON.parse(encoded.startsWith('base64-')?Buffer.from(encoded.slice(7),'base64url').toString('utf8'):encoded).access_token : null;
+}
+try {
+  for (const mode of modes) {
+    const port=3110; const origin=`http://127.0.0.1:${port}`;
+    const child=fork('node_modules/next/dist/bin/next',['start','--hostname','127.0.0.1','--port',String(port)],{
+      execArgv:['--env-file=.env.local','--import',pathToFileURL(resolve('.tools/qa-upstream.mjs')).href],silent:true,
+      env:{...process.env,APP_ORIGIN:origin,BASEERAT_QA_FIXTURE:mode},
+    });
+    let serverLog=''; child.stdout.on('data',data=>{serverLog+=String(data)}); child.stderr.on('data',data=>{serverLog+=String(data)});child.on('error',error=>{serverLog+=error.code});
+    const context=await browser.newContext({baseURL:origin,viewport:{width:1024,height:768}}); const page=await context.newPage(); let token;
+    const entry={mode,origin,assertions:{}};
+    try {
+      let ready=false;
+      for(let attempt=0;attempt<30;attempt++){try{if((await fetch(`${origin}/sign-in`)).ok){ready=true;break}}catch{}await delay(200)}
+      if(!ready)throw new Error('Isolated QA server did not become ready');
+      await page.goto(`${origin}/sign-in`);
+      await page.getByLabel('Email address').fill('presenter@baseerat.example');
+      await page.getByLabel('Password',{exact:true}).fill(acceptance.BASEERAT_ACCOUNT_PASSWORD);
+      await page.getByRole('button',{name:'Sign in',exact:true}).click();
+      await page.waitForURL(`${origin}/`); token=await tokenFromRealCookies(context);
+      if(['server-unavailable','no-cache-source'].includes(mode)) {
+        await page.getByRole('heading',{name:'Unable to load this view'}).waitFor();
+        entry.assertions.errorRendered=true;
+        if(mode==='no-cache-source')entry.assertions.detailStatus=(await page.request.get('/api/records/10000000-0000-4000-8000-000000000001')).status();
+        await page.screenshot({path:`.tools/qa-evidence/${mode}.png`});
+        await changeMode(child,'off'); await page.getByRole('button',{name:'Try again',exact:true}).click();
+        entry.assertions.retryRecovered=await page.getByRole('heading',{name:'Start with the evidence'}).isVisible().catch(()=>false);
+        if(!entry.assertions.retryRecovered)try{await page.getByRole('heading',{name:'Start with the evidence'}).waitFor({timeout:5000});entry.assertions.retryRecovered=true}catch{}
+      } else {
+        await page.getByRole('heading',{name:'Start with the evidence'}).waitFor();
+        if(mode==='cached-source') {
+          await page.goto(`${origin}/records/10000000-0000-4000-8000-000000000001`);
+          await page.getByRole('status').filter({hasText:'Source unavailable. Showing stored evidence'}).waitFor();
+          entry.assertions.cachedWarningRendered=true;
+          entry.assertions.detailStatus=(await page.request.get('/api/records/10000000-0000-4000-8000-000000000001')).status();
+          await page.screenshot({path:`.tools/qa-evidence/${mode}.png`}); await changeMode(child,'off'); await page.reload();
+          entry.assertions.recovered=await page.getByRole('heading',{name:'Hydraulic actuator'}).isVisible();
+        } else {
+          let logout;
+          await page.route('**/api/auth/sign-out',async route=>{const actual=await route.fetch();logout={status:actual.status(),body:await actual.json()};await route.fulfill({response:actual});});
+          await page.getByRole('button',{name:'Sign out',exact:true}).click();
+          if(mode==='logout-once') {
+            await page.getByText('Unable to sign out. Check your connection and try again.',{exact:true}).waitFor();
+            entry.assertions.failureRendered=true;
+            entry.assertions.contextStatusAfterFailure=(await page.request.get('/api/auth/context')).status();
+            await page.screenshot({path:`.tools/qa-evidence/${mode}.png`});
+            await changeMode(child,'off'); await page.getByRole('button',{name:'Sign out',exact:true}).click();
+            try{await page.getByRole('heading',{name:'Sign in to your workspace'}).waitFor({timeout:5000});entry.assertions.retryRecovered=true}catch{entry.assertions.retryRecovered=false}
+          } else {
+            await page.getByRole('heading',{name:'Sign in to your workspace'}).waitFor();
+            await page.getByRole('status').filter({hasText:'Sign-out completed, but its audit record could not be saved'}).waitFor();
+            entry.assertions.auditUnavailableNotice=true;
+            entry.assertions.signedOut=(await page.request.get('/api/records')).status()===401;
+            entry.assertions.auditRecorded=logout.body.data.auditRecorded;
+            await page.screenshot({path:`.tools/qa-evidence/${mode}.png`});
+          }
+        }
+      }
+    } catch(error) { entry.error=error.message.split('\n')[0]; }
+    finally {
+      await changeMode(child,'off').catch(()=>{});
+      if(token)await fetch(`${acceptance.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/logout?scope=local`,{method:'POST',headers:{apikey:acceptance.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,Authorization:`Bearer ${token}`}}).catch(()=>{});
+      await context.close(); if(child.exitCode===null && child.signalCode===null){child.kill();await new Promise(resolve=>child.once('exit',resolve));}
+      await writeFile(`.tools/qa-evidence/${mode}-server.log`,serverLog);
+    }
+    results.checks.push(entry); console.log(JSON.stringify(entry));
+  }
+} finally {await browser.close();await writeFile('.tools/qa-evidence/results.json',JSON.stringify(results,null,2));}
+if(results.checks.some(check=>check.error||check.assertions.retryRecovered===false))process.exitCode=1;

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { userDatabase } from '@/server/supabase';
+import { stagedLogoutDatabase, userDatabase } from '@/server/supabase';
 import { failure, noStore, sameOrigin } from '@/server/http';
 import { auditCompletedSignOut } from '@/server/auth-audit';
 export async function POST(request: Request) {
@@ -10,8 +10,10 @@ export async function POST(request: Request) {
     const { data: { session } } = await db.auth.getSession();
     if (userError || !user || !session) throw new Error('SESSION_UNAVAILABLE');
     const accessToken = session.access_token;
-    const { error } = await db.auth.signOut({ scope: 'local' });
+    const logout = await stagedLogoutDatabase();
+    const { error } = await logout.db.auth.signOut({ scope: 'local' });
     if (error) throw error;
+    logout.commitCookies();
     const requestId = crypto.randomUUID();
     let auditRecorded = true;
     try { await auditCompletedSignOut(accessToken, requestId); }

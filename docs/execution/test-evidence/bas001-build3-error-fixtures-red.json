@@ -1,0 +1,24 @@
+{
+  "buildId": "dL1D7nSp0zu6Cl6gxqxR9",
+  "browser": "156.0.8078.4",
+  "fixture": "isolated Node upstream-response preload; real Auth/RLS reads; no hosted source/grant mutation",
+  "checks": [
+    {
+      "mode": "server-once",
+      "origin": "http://127.0.0.1:3110",
+      "assertions": {
+        "errorRendered": true,
+        "retryRecovered": false
+      }
+    },
+    {
+      "mode": "logout-once",
+      "origin": "http://127.0.0.1:3110",
+      "assertions": {
+        "failureRendered": true,
+        "contextStatusAfterFailure": 401,
+        "retryRecovered": false
+      }
+    }
+  ]
+}

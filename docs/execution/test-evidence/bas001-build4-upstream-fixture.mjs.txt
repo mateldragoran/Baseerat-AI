@@ -1,0 +1,35 @@
+// Test-only preload. Never imported by app source or deployed; only a separate loopback QA process.
+const modes = new Set(['off','server-unavailable','cached-source','no-cache-source','logout-once','audit-signout']);
+let mode = process.env.BASEERAT_QA_FIXTURE || 'off';
+if (!modes.has(mode)) throw new Error('Unknown QA fixture');
+let used = false;
+const projectHost = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname;
+const upstream = globalThis.fetch.bind(globalThis);
+const unavailable = () => new Response(JSON.stringify({ code:'QA_UPSTREAM_UNAVAILABLE', message:'Isolated upstream failure fixture' }), {status:503,headers:{'Content-Type':'application/json','Retry-After':'0'}});
+process.on('message', message => {
+  if (message?.fixture && modes.has(message.fixture)) {
+    mode=message.fixture; used=false; process.send?.({ fixture:mode });
+  }
+});
+globalThis.fetch = async (input,init) => {
+  const url = new URL(typeof input === 'string' || input instanceof URL ? input : input.url);
+  if (url.hostname !== projectHost) return upstream(input,init);
+  if (mode==='server-unavailable' && url.pathname==='/rest/v1/records') return unavailable();
+  if (mode==='logout-once' && !used && url.pathname==='/auth/v1/logout') { used=true; return unavailable(); }
+  if (mode==='audit-signout' && url.pathname==='/rest/v1/rpc/append_auth_event') {
+    const body = init?.body ? String(init.body) : input instanceof Request ? await input.clone().text() : '';
+    if (JSON.parse(body || '{}').p_action==='auth.sign_out') return unavailable();
+  }
+  const response = await upstream(input,init);
+  if (['cached-source','no-cache-source'].includes(mode) && url.pathname==='/rest/v1/records' && response.ok) {
+    const data=await response.json();
+    for (const row of Array.isArray(data) ? data : [data]) {
+      for (const source of Array.isArray(row.sources) ? row.sources : [row.sources]) {
+        if (source?.id==='engineering') { source.availability='unavailable'; source.cached_available=mode==='cached-source'; }
+      }
+    }
+    const headers=new Headers(response.headers); headers.delete('content-length'); headers.delete('content-encoding');
+    return new Response(JSON.stringify(data),{status:response.status,headers});
+  }
+  return response;
+};
