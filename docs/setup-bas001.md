@@ -52,6 +52,9 @@ supabase/tests/bas001_access.sql in the isolated database to check actual Postgr
 The SQL policy fixtures bypass password authentication and are distinct from real account tests.
 
 Run Playwright via `npm run test:acceptance` against the running production server.
+Authentication tests default to trace/screenshot/video off. Keep traces off for real credentials;
+the implementer uses an ignored local wrapper to redact password/token/secret values from any
+captured failure output before printing it. Do not attach credential-bearing traces or auth state.
 Install its browser first with `npx playwright install chromium`. A task-local installation is
 supported by setting PLAYWRIGHT_BROWSERS_PATH to an ignored `.tools/browsers` absolute path
 for both installation and tests; the current checkout uses this approach.

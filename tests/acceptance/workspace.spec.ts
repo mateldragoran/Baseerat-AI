@@ -25,13 +25,25 @@ test('presenter and restricted accounts use separate sessions and source rights'
     await page.getByLabel('Password', { exact: true }).fill(process.env.BASEERAT_ACCOUNT_PASSWORD!);
     await page.getByRole('button', { name: 'Sign in', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Start with the evidence' })).toBeVisible();
-    expect((await context.cookies()).filter(cookie => cookie.name.startsWith('sb-')).every(cookie => cookie.httpOnly)).toBe(true);
-    await page.getByRole('link', { name: /Open HA-204/ }).click();
+    const authCookies = (await context.cookies()).filter(cookie => cookie.name.startsWith('sb-'));
+    expect(authCookies.length).toBeGreaterThan(0);
+    expect(authCookies.every(cookie => cookie.httpOnly && cookie.sameSite === 'Lax')).toBe(true);
+    await page.getByRole('link', { name: 'Open HA-204', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Hydraulic actuator' })).toBeVisible();
     const denied = await page.request.get('/api/records/10000000-0000-4000-8000-000000000007?role=presenter_admin');
     expect(denied.status()).toBe(profile === 'restricted' ? 404 : 200);
+    let logoutResult: unknown;
+    // Observe the real upstream response before full navigation disposes its browser body.
+    // Forward it unchanged; no fabricated authentication or logout result is supplied.
+    await page.route('**/api/auth/sign-out', async route => {
+      const upstream = await route.fetch();
+      logoutResult = { status: upstream.status(), data: (await upstream.json()).data };
+      await route.fulfill({ response: upstream });
+    });
     await page.getByRole('button', { name: 'Sign out' }).click();
+    await expect.poll(() => logoutResult).toEqual({ status: 200, data: { signedOut: true, auditRecorded: true } });
     await expect(page.getByRole('heading', { name: 'Sign in to your workspace' })).toBeVisible();
+    expect((await page.request.get('/api/records')).status()).toBe(401);
     await page.goBack();
     await expect(page.getByRole('heading', { name: 'Sign in to your workspace' })).toBeVisible();
     await context.close();

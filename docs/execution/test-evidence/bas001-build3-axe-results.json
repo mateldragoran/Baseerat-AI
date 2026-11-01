@@ -1,0 +1,116 @@
+{
+  "browser": "156.0.8078.4",
+  "axe": "4.14.0",
+  "buildId": "dL1D7nSp0zu6Cl6gxqxR9",
+  "baseUrl": "http://localhost:3000",
+  "checks": [
+    {
+      "state": "initial",
+      "theme": "light",
+      "width": 1440,
+      "url": "http://localhost:3000/sign-in",
+      "passes": 34,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "initial",
+      "theme": "dark",
+      "width": 1440,
+      "url": "http://localhost:3000/sign-in",
+      "passes": 34,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "invalid_credentials",
+      "theme": "light",
+      "width": 1440,
+      "url": "http://localhost:3000/sign-in",
+      "passes": 34,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "invalid_credentials",
+      "theme": "dark",
+      "width": 1440,
+      "url": "http://localhost:3000/sign-in",
+      "passes": 34,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "audit_unavailable_notice",
+      "theme": "light",
+      "width": 1440,
+      "url": "http://localhost:3000/sign-in?notice=audit-unavailable",
+      "passes": 34,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "audit_unavailable_notice",
+      "theme": "dark",
+      "width": 1440,
+      "url": "http://localhost:3000/sign-in?notice=audit-unavailable",
+      "passes": 34,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "initial",
+      "theme": "light",
+      "width": 320,
+      "url": "http://localhost:3000/sign-in",
+      "passes": 33,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "initial",
+      "theme": "dark",
+      "width": 320,
+      "url": "http://localhost:3000/sign-in",
+      "passes": 33,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "invalid_credentials",
+      "theme": "light",
+      "width": 320,
+      "url": "http://localhost:3000/sign-in",
+      "passes": 33,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "invalid_credentials",
+      "theme": "dark",
+      "width": 320,
+      "url": "http://localhost:3000/sign-in",
+      "passes": 33,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "audit_unavailable_notice",
+      "theme": "light",
+      "width": 320,
+      "url": "http://localhost:3000/sign-in?notice=audit-unavailable",
+      "passes": 33,
+      "violations": [],
+      "incomplete": []
+    },
+    {
+      "state": "audit_unavailable_notice",
+      "theme": "dark",
+      "width": 320,
+      "url": "http://localhost:3000/sign-in?notice=audit-unavailable",
+      "passes": 33,
+      "violations": [],
+      "incomplete": []
+    }
+  ]
+}

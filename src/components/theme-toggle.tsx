@@ -12,5 +12,5 @@ export function ThemeToggle() {
   return <button className="quiet-button theme-toggle" onClick={() => {
     const next = !dark;
     document.documentElement.dataset.theme = next ? 'dark' : 'light';
-  }} aria-label={dark ? 'Use light theme' : 'Use dark theme'}>{dark ? <Sun aria-hidden="true" size={18} /> : <Moon aria-hidden="true" size={18} />}<span>{dark ? 'Light theme' : 'Dark theme'}</span></button>;
+  }} aria-label={dark ? 'Use light theme' : 'Use dark theme'}>{dark ? <Sun aria-hidden="true" size={18} strokeWidth={1.5} absoluteStrokeWidth /> : <Moon aria-hidden="true" size={18} strokeWidth={1.5} absoluteStrokeWidth />}<span>{dark ? 'Light theme' : 'Dark theme'}</span></button>;
 }

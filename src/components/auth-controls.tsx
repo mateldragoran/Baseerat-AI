@@ -22,9 +22,9 @@ export function SignInForm() {
   }}>
     <p className="field-note">Both fields are required.</p>
     <div className="field"><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="username" spellCheck={false} placeholder="name@example.com" required maxLength={254} /></div>
-    <div className="field"><label htmlFor="password">Password</label><div className="password-field"><input id="password" name="password" type={show ? 'text' : 'password'} autoComplete="current-password" required maxLength={1024} /><button type="button" className="password-toggle" aria-label={show ? 'Hide password' : 'Show password'} onClick={() => setShow(!show)}>{show ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}</button></div></div>
+    <div className="field"><label htmlFor="password">Password</label><div className="password-field"><input id="password" name="password" type={show ? 'text' : 'password'} autoComplete="current-password" required maxLength={1024} /><button type="button" className="password-toggle" aria-label={show ? 'Hide password' : 'Show password'} onClick={() => setShow(!show)}>{show ? <EyeOff size={18} strokeWidth={1.5} absoluteStrokeWidth aria-hidden="true" /> : <Eye size={18} strokeWidth={1.5} absoluteStrokeWidth aria-hidden="true" />}</button></div></div>
     <div role="alert" className={message ? 'error-message' : ''}>{message}</div>
-    <button className="primary-button" type="submit" aria-disabled={pending}>{pending ? 'Sign in · Connecting…' : 'Sign in'}<ArrowRight size={18} aria-hidden="true" /></button>
+    <button className="primary-button" type="submit" aria-disabled={pending}>{pending ? 'Sign in · Connecting…' : 'Sign in'}<ArrowRight size={18} strokeWidth={2} absoluteStrokeWidth aria-hidden="true" /></button>
     <p role="status" className="sr-only">{pending ? 'Signing in. Wait for your workspace.' : ''}</p>
   </form>;
 }
@@ -43,7 +43,7 @@ export function SignOut() {
       const result = await response.json();
       window.location.replace(result.data.auditRecorded === false ? '/sign-in?notice=audit-unavailable' : '/sign-in');
     } catch { setMessage('Unable to sign out. Check your connection and try again.'); busy.current = false; setPending(false); }
-  }}><LogOut size={17} aria-hidden="true" />{pending ? 'Sign out · Waiting…' : 'Sign out'}</button><div role="alert">{message}</div></div>;
+  }}><LogOut size={17} strokeWidth={1.5} absoluteStrokeWidth aria-hidden="true" />{pending ? 'Sign out · Waiting…' : 'Sign out'}</button><div role="alert">{message}</div></div>;
 }
 
 export function SessionBoundary() {

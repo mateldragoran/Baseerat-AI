@@ -7,14 +7,15 @@ implementation on 31 October 2026.
 The repository now contains a **BAS-001 implementation checkpoint; acceptance is
 still open**. Its current local application includes password sign-in/sign-out,
 Overview, identifier lookup, persisted source-version detail, live source/action
-grants, private-session access controls and auth audit foundations. Hosted
-database policy tests pass with isolated rollback fixtures. This does not prove
-the four real-account browser journeys or deployed behavior.
+grants, private-session access controls and auth audit foundations. Four real
+accounts are provisioned; direct access checks pass for all four profiles, and
+local presenter/restricted browser journeys pass. Hosted database policy tests
+also pass with isolated rollback fixtures. Deployed behavior remains unverified.
 
 See [BAS-001 setup and commands](docs/setup-bas001.md),
 [ticket evidence and limitations](docs/execution/ticket-notes/bas-001.md), and the
 [central recovery ledger](docs/execution/agent-state.md) for the exact current
-state. Real account provisioning, hosted signup configuration, Vercel deployment
+state. Vercel deployment
 and remaining interface/assistive-technology coverage are explicit acceptance
 gates. Preserve the working branch/worktree until those gates are verified.
 

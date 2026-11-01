@@ -1,6 +1,7 @@
 import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './tests/acceptance', fullyParallel: false,
-  use: { baseURL: process.env.BASEERAT_ACCEPTANCE_URL || 'http://localhost:3000', trace: 'retain-on-failure' },
+  // Authentication journeys contain real passwords; keep credential-bearing traces off.
+  use: { baseURL: process.env.BASEERAT_ACCEPTANCE_URL || 'http://localhost:3000', trace: 'off', screenshot: 'off', video: 'off' },
   reporter: 'list',
 });
